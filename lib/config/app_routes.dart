@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 import '../app_router.dart';
-import '../features/catalog/presentation/screens/catalog_screen.dart';
 
 class AppRoutes {
   static const String initial = '/';
@@ -12,7 +11,6 @@ class AppRoutes {
 
   static Map<String, WidgetBuilder> get routes => {
         initial: (context) => const SplashPage(),
-        catalog: (context) => const CatalogScreen(),
         login: (context) => const LoginPlaceholderPage(),
       };
 }
