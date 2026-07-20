@@ -42,7 +42,7 @@ flutter:
   uses-material-design: true
   assets:
     - assets/images/test_test.jpg
-    - assets/images/splash_text.png   # Used by flutter_native_splash (see flutter_native_splash.yaml)
+    - assets/images/taskLogo.png   # Used by flutter_native_splash (see flutter_native_splash.yaml)
   # assets:
   #   - assets/images/
   #   - assets/icons/

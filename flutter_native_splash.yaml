@@ -1,8 +1,8 @@
 flutter_native_splash:
   color: "#ffffff"
-  image: assets/images/splash_text.png
+  image: assets/images/taskLogo.png
   fullscreen: true
   android_12:
     color: "#ffffff"
-    image: assets/images/splash_text.png
+    image: assets/images/taskLogo.png
     icon_background_color: "#ffffff"
