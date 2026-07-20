@@ -52,7 +52,10 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       emit(AuthAuthenticated(user: user));
     } on FirebaseAuthException catch (e) {
       debugPrint('❌ [AuthBloc] LOGIN FAILED -> FirebaseAuthException: ${e.code}');
-      final errorMessage = _mapLoginExceptionToMessage(e);
+      final errorMessage = _mapFirebaseAuthExceptionToMessage(
+        e,
+        'Login failed. Please try again.',
+      );
       emit(AuthFailure(message: errorMessage));
     } catch (e, stackTrace) {
       debugPrint('❌ [AuthBloc] LOGIN FAILED -> Error: $e');
@@ -78,7 +81,10 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       emit(AuthAuthenticated(user: user));
     } on FirebaseAuthException catch (e) {
       debugPrint('❌ [AuthBloc] REGISTER FAILED -> FirebaseAuthException: ${e.code}');
-      final errorMessage = _mapRegisterExceptionToMessage(e);
+      final errorMessage = _mapFirebaseAuthExceptionToMessage(
+        e,
+        'Registration failed. Please try again.',
+      );
       emit(AuthFailure(message: errorMessage));
     } catch (e, stackTrace) {
       debugPrint('❌ [AuthBloc] REGISTER FAILED -> Error: $e');
@@ -113,7 +119,10 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       emit(const AuthPasswordResetEmailSent());
     } on FirebaseAuthException catch (e) {
       debugPrint('❌ [AuthBloc] FirebaseAuthException: ${e.code}');
-      final String errorMessage = _mapForgotPasswordExceptionToMessage(e);
+      final String errorMessage = _mapFirebaseAuthExceptionToMessage(
+        e,
+        'Failed to send the password reset email. Please try again.',
+      );
       emit(AuthFailure(message: errorMessage));
     } catch (e) {
       debugPrint('❌ [AuthBloc] Generic error on forgot password: $e');
@@ -122,7 +131,10 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     }
   }
 
-  String _mapLoginExceptionToMessage(FirebaseAuthException e) {
+  String _mapFirebaseAuthExceptionToMessage(
+    FirebaseAuthException e,
+    String defaultFallbackMessage,
+  ) {
     switch (e.code) {
       case 'wrong-password':
         return 'Incorrect password. Please try again.';
@@ -132,42 +144,16 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         return 'No account was found with this email.';
       case 'invalid-credential':
         return 'Incorrect email or password.';
+      case 'email-already-in-use':
+        return 'An account with this email already exists.';
+      case 'weak-password':
+        return 'Password is too weak. Please choose a stronger password.';
       case 'network-request-failed':
         return 'Network error. Please check your internet connection.';
       case 'too-many-requests':
         return 'Too many attempts. Please try again later.';
       default:
-        return 'Login failed. Please try again.';
-    }
-  }
-
-  String _mapRegisterExceptionToMessage(FirebaseAuthException e) {
-    switch (e.code) {
-      case 'email-already-in-use':
-        return 'An account with this email already exists.';
-      case 'weak-password':
-        return 'Password is too weak. Please choose a stronger password.';
-      case 'invalid-email':
-        return 'Please enter a valid email address.';
-      case 'network-request-failed':
-        return 'Network error. Please check your internet connection.';
-      default:
-        return 'Registration failed. Please try again.';
-    }
-  }
-
-  String _mapForgotPasswordExceptionToMessage(FirebaseAuthException e) {
-    switch (e.code) {
-      case 'user-not-found':
-        return 'No account was found with this email.';
-      case 'invalid-email':
-        return 'Please enter a valid email address.';
-      case 'network-request-failed':
-        return 'Network error. Please check your internet connection.';
-      case 'too-many-requests':
-        return 'Too many requests. Please try again later.';
-      default:
-        return 'Failed to send the password reset email. Please try again.';
+        return defaultFallbackMessage;
     }
   }
 
