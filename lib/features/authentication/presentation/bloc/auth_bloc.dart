@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../domain/usecases/get_current_user_usecase.dart';
 import '../../domain/usecases/login_usecase.dart';
@@ -32,14 +33,20 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     AuthLoginRequested event,
     Emitter<AuthState> emit,
   ) async {
+    debugPrint('🔒 [AuthBloc] LOGIN REQUESTED for email: ${event.email}');
     emit(const AuthLoading());
     try {
+      debugPrint('🔒 [AuthBloc] Calling LoginUseCase...');
       final user = await _loginUseCase(
         email: event.email,
         password: event.password,
       );
+      debugPrint(
+          '✅ [AuthBloc] LOGIN SUCCESS -> User ID: ${user.id}, Email: ${user.email}');
       emit(AuthAuthenticated(user: user));
-    } catch (e) {
+    } catch (e, stackTrace) {
+      debugPrint('❌ [AuthBloc] LOGIN FAILED -> Error: $e');
+      debugPrint('❌ [AuthBloc] StackTrace:\n$stackTrace');
       emit(AuthFailure(message: e.toString()));
     }
   }
@@ -48,14 +55,20 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     AuthRegisterRequested event,
     Emitter<AuthState> emit,
   ) async {
+    debugPrint('🔒 [AuthBloc] REGISTER REQUESTED for email: ${event.email}');
     emit(const AuthLoading());
     try {
+      debugPrint('🔒 [AuthBloc] Calling RegisterUseCase...');
       final user = await _registerUseCase(
         email: event.email,
         password: event.password,
       );
+      debugPrint(
+          '✅ [AuthBloc] REGISTER SUCCESS -> User ID: ${user.id}, Email: ${user.email}');
       emit(AuthAuthenticated(user: user));
-    } catch (e) {
+    } catch (e, stackTrace) {
+      debugPrint('❌ [AuthBloc] REGISTER FAILED -> Error: $e');
+      debugPrint('❌ [AuthBloc] StackTrace:\n$stackTrace');
       emit(AuthFailure(message: e.toString()));
     }
   }
@@ -64,10 +77,12 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     AuthLogoutRequested event,
     Emitter<AuthState> emit,
   ) async {
+    debugPrint('🔒 [AuthBloc] LOGOUT REQUESTED');
     try {
       await _logoutUseCase();
-    } catch (_) {
-      // Ignore errors and emit unauthenticated
+      debugPrint('✅ [AuthBloc] LOGOUT SUCCESS');
+    } catch (e) {
+      debugPrint('⚠️ [AuthBloc] Logout error: $e');
     }
     emit(const AuthUnauthenticated());
   }
@@ -76,10 +91,14 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     AuthCheckRequested event,
     Emitter<AuthState> emit,
   ) {
+    debugPrint('🔒 [AuthBloc] AUTH CHECK REQUESTED');
     final user = _getCurrentUserUseCase();
     if (user != null) {
+      debugPrint(
+          '✅ [AuthBloc] User is currently authenticated (ID: ${user.id})');
       emit(AuthAuthenticated(user: user));
     } else {
+      debugPrint('ℹ️ [AuthBloc] No user currently authenticated');
       emit(const AuthUnauthenticated());
     }
   }
