@@ -1,15 +1,11 @@
-
-
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:get/get.dart';
 
 import '../../../config/app_colors.dart';
 import '../../utils/responsive.dart';
 import '../custom_text_widget.dart';
 import 'button/neumorphic_plus.dart';
 
-/// Configuration class for filter options
 class FilterOption {
   final String value;
   final String translationKey;
@@ -28,7 +24,6 @@ class FilterOption {
   });
 }
 
-/// Dynamic filter widget that can be reused across different screens
 class DynamicFilterWidget extends StatelessWidget {
   final List<FilterOption> filterOptions;
   final String? currentFilter;
@@ -66,7 +61,6 @@ class DynamicFilterWidget extends StatelessWidget {
         Row(
           mainAxisSize: MainAxisSize.max,
           children: [
-            // horizontalPadding.gap,
             Expanded(
               child: AppOvalButton(
                 height: buttonHeight.h,
@@ -98,14 +92,15 @@ class DynamicFilterWidget extends StatelessWidget {
             onTap: () => onFilterSelected(option.value),
             child: Center(
               child: CustomTextWidget(
-                text: option.translationKey.tr,
+                text: option.translationKey,
                 color: isSelected
                     ? (option.selectedColor ?? defaultSelectedColor)
                     : (option.unselectedColor ?? defaultUnselectedColor),
-                fontSize:  Responsive.isTablet? 6.sp :15.sp,
+                fontSize: Responsive.isTablet ? 6.sp : 15.sp,
                 fontWeight: isSelected
                     ? (option.selectedFontWeight ?? defaultSelectedFontWeight)
-                    : (option.unselectedFontWeight ?? defaultUnselectedFontWeight),
+                    : (option.unselectedFontWeight ??
+                        defaultUnselectedFontWeight),
               ),
             ),
           ),

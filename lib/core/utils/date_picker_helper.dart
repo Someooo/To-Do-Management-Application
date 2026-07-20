@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:intl/date_symbol_data_local.dart';
 
-/// Helper function to show date picker with custom Arabic button labels
-/// This ensures consistent button labels: "موافق" (OK) and "إلغاء" (Cancel) in Arabic
 Future<DateTime?> showLocalizedDatePicker({
   required BuildContext context,
   required DateTime initialDate,
@@ -15,17 +12,18 @@ Future<DateTime?> showLocalizedDatePicker({
   String? confirmText,
   SelectableDayPredicate? selectableDayPredicate,
 }) async {
-  final currentLocale = Get.locale ?? const Locale('ar');
-  
+  final currentLocale = Localizations.localeOf(context);
+
   try {
     await initializeDateFormatting(currentLocale.languageCode, null);
-  } catch (e) {
-    // Continue if initialization fails
-  }
+  } catch (e) {}
 
-  // Set button labels based on locale
-  final String localizedCancel = cancelText ?? (currentLocale.languageCode == 'ar' ? 'إلغاء' : 'Cancel');
-  final String localizedConfirm = confirmText ?? (currentLocale.languageCode == 'ar' ? 'حسناً' : 'OK');
+  final String localizedCancel =
+      cancelText ?? (currentLocale.languageCode == 'ar' ? 'إلغاء' : 'Cancel');
+  final String localizedConfirm =
+      confirmText ?? (currentLocale.languageCode == 'ar' ? 'حسناً' : 'OK');
+
+  if (!context.mounted) return null;
 
   return await showDatePicker(
     context: context,
@@ -42,8 +40,6 @@ Future<DateTime?> showLocalizedDatePicker({
   );
 }
 
-/// Helper function to show time picker with custom Arabic button labels
-/// This ensures consistent button labels: "موافق" (OK) and "إلغاء" (Cancel) in Arabic
 Future<TimeOfDay?> showLocalizedTimePicker({
   required BuildContext context,
   required TimeOfDay initialTime,
@@ -55,17 +51,18 @@ Future<TimeOfDay?> showLocalizedTimePicker({
   String? minuteLabelText,
   TransitionBuilder? builder,
 }) async {
-  final currentLocale = Get.locale ?? const Locale('ar');
-  
+  final currentLocale = Localizations.localeOf(context);
+
   try {
     await initializeDateFormatting(currentLocale.languageCode, null);
-  } catch (e) {
-    // Continue if initialization fails
-  }
+  } catch (e) {}
 
-  // Set button labels based on locale
-  final String localizedCancel = cancelText ?? (currentLocale.languageCode == 'ar' ? 'إلغاء' : 'Cancel');
-  final String localizedConfirm = confirmText ?? (currentLocale.languageCode == 'ar' ? 'حسناً' : 'OK');
+  final String localizedCancel =
+      cancelText ?? (currentLocale.languageCode == 'ar' ? 'إلغاء' : 'Cancel');
+  final String localizedConfirm =
+      confirmText ?? (currentLocale.languageCode == 'ar' ? 'حسناً' : 'OK');
+
+  if (!context.mounted) return null;
 
   return await showTimePicker(
     context: context,
@@ -79,4 +76,3 @@ Future<TimeOfDay?> showLocalizedTimePicker({
     builder: builder,
   );
 }
-

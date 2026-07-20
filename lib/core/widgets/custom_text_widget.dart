@@ -1,11 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:get/get.dart';
 import '../enums/text_style_enum.dart';
 
 import '../../config/app_colors.dart';
-
-// Enum for TextTheme styles
 
 class CustomTextWidget extends StatelessWidget {
   final String text;
@@ -56,13 +53,11 @@ class CustomTextWidget extends StatelessWidget {
   TextStyle _buildTextStyle(BuildContext context) {
     final TextTheme textTheme = Theme.of(context).textTheme;
 
-    // Select the base style based on the enum, but check if fontSize is provided first
     TextStyle baseStyle;
     if (fontSize != null) {
-      // If fontSize is provided, ignore the TextThemeStyleEnum and use custom fontSize
-      baseStyle = textTheme.displayMedium ?? const TextStyle(); // Use a default style when overriding
+      baseStyle = textTheme.displayMedium ??
+          const TextStyle(); // Use a default style when overriding
     } else {
-      // Otherwise, select the base style according to the enum
       switch (textThemeStyle) {
         //
         case TextThemeStyleEnum.bodyExtraSmall:
@@ -104,14 +99,12 @@ class CustomTextWidget extends StatelessWidget {
         case TextThemeStyleEnum.headlineLarge:
           baseStyle = textTheme.headlineLarge ?? const TextStyle();
           break;
-        // case TextThemeStyleEnum.displayMedium:
         default:
           baseStyle = textTheme.displayMedium ?? const TextStyle();
           break;
       }
     }
 
-    // Return the customized text style with the provided properties, including fontSize if given
     return baseStyle.copyWith(
       fontSize: fontSize?.sp ?? baseStyle.fontSize?.sp,
       fontWeight: fontWeight ?? baseStyle.fontWeight,
@@ -137,12 +130,11 @@ class CustomTextWidget extends StatelessWidget {
         borderRadius: BorderRadius.circular(10.r),
       ),
       child: Text(
-        isLocalize ? text.tr: text,
+        text,
         textAlign: textAlign ?? TextAlign.start,
         maxLines: maxLines,
         overflow: overflow ?? TextOverflow.ellipsis,
-
-        style:textstyle?? _buildTextStyle(context),
+        style: textstyle ?? _buildTextStyle(context),
       ),
     );
   }

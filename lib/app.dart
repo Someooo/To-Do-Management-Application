@@ -2,13 +2,9 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:get/get.dart';
 import 'package:my_template/config/app_routes.dart';
 import 'package:my_template/config/app_theme.dart';
-import 'package:my_template/core/localization/app_localization.dart';
-import 'package:my_template/core/controllers/theme_controller.dart';
-import 'package:my_template/core/controllers/language_controller.dart';
-
+import 'package:my_template/core/utils/toast_utils.dart';
 import 'package:my_template/core/widgets/connectivity_banner_widget.dart';
 
 class AppEntrypoint extends StatelessWidget {
@@ -20,18 +16,15 @@ class AppEntrypoint extends StatelessWidget {
       designSize: const Size(375, 812),
       minTextAdapt: true,
       builder: (context, child) {
-        return GetMaterialApp(
+        return MaterialApp(
           title: 'My Template App',
           debugShowCheckedModeBanner: false,
-
+          scaffoldMessengerKey: ToastUtils.messengerKey,
           initialRoute: AppRoutes.initial,
-          getPages: AppRoutes.pages,
+          routes: AppRoutes.routes,
           theme: AppTheme.light,
           darkTheme: AppTheme.dark,
-          themeMode: Get.find<ThemeController>().themeMode,
-          translations: AppLocalization(),
-          locale: Get.find<LanguageController>().locale,
-          fallbackLocale: LanguageController.fallbackLocale,
+          themeMode: ThemeMode.system,
           builder: (context, child) {
             return Scaffold(
               resizeToAvoidBottomInset: false,
@@ -48,4 +41,3 @@ class AppEntrypoint extends StatelessWidget {
     );
   }
 }
-

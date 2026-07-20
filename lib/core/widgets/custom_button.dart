@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import '../../config/app_colors.dart';
 import '../enums/text_style_enum.dart';
 
@@ -102,8 +101,8 @@ class CustomButton extends StatelessWidget {
   final String? label;
   final bool? darkText;
   final String? text;
-  final bool useGradient; // New bool to enable gradient
-  final TextStyle? textStyle; // Custom text style
+  final bool useGradient;
+  final TextStyle? textStyle;
 
   const CustomButton({
     super.key,
@@ -120,7 +119,7 @@ class CustomButton extends StatelessWidget {
     this.label,
     this.darkText,
     this.text,
-    this.useGradient = true, // Default is false
+    this.useGradient = true,
     this.textStyle,
   });
 
@@ -130,7 +129,9 @@ class CustomButton extends StatelessWidget {
       onPressed: onPressed,
       style: ElevatedButton.styleFrom(
         elevation: elevation ?? 0,
-        backgroundColor: useGradient ? Colors.transparent : backgroundColor ?? Theme.of(context).primaryColor,
+        backgroundColor: useGradient
+            ? Colors.transparent
+            : backgroundColor ?? Theme.of(context).primaryColor,
         side: borderColor != null
             ? BorderSide(
                 color: borderColor!,
@@ -149,7 +150,7 @@ class CustomButton extends StatelessWidget {
                 )
               : CustomTextWidget(
                   text: text ?? "",
-                  color: Get.theme.colorScheme.onSurface,
+                  color: Theme.of(context).colorScheme.onSurface,
                 )
           : child,
     );
@@ -162,8 +163,9 @@ class CustomButton extends StatelessWidget {
               onPressed: onPressed,
               style: ElevatedButton.styleFrom(
                 elevation: elevation ?? 0,
-                backgroundColor:
-                    useGradient ? Colors.transparent : backgroundColor ?? Theme.of(context).primaryColor,
+                backgroundColor: useGradient
+                    ? Colors.transparent
+                    : backgroundColor ?? Theme.of(context).primaryColor,
                 side: borderColor != null
                     ? BorderSide(
                         color: borderColor!,
@@ -192,12 +194,8 @@ class CustomButton extends StatelessWidget {
                         SharedColors.primaryColor,
                         SharedColors.secondaryColor,
                       ],
-                      // stops: const [0.0, 0.5],
                       begin: Alignment.topLeft,
                       end: Alignment.bottomRight,
-                      // colors: [Colors.blue, Colors.purple],
-                      // begin: Alignment.topLeft,
-                      // end: Alignment.bottomRight,
                     ),
                     borderRadius: BorderRadius.circular(borderRadius),
                   ),
@@ -270,8 +268,7 @@ class CustomTextButton extends StatelessWidget {
       cursor: SystemMouseCursors.click,
       child: InkWell(
         onTap: onTap,
-        splashColor: Get.theme.primaryColor.withAlpha(50),
-        // highlightColor: Colors.green,
+        splashColor: Theme.of(context).primaryColor.withAlpha(50),
         borderRadius: BorderRadius.circular(5),
         child: Padding(
           padding: const EdgeInsets.symmetric(vertical: 2, horizontal: 5),
@@ -287,4 +284,3 @@ class CustomTextButton extends StatelessWidget {
     );
   }
 }
-

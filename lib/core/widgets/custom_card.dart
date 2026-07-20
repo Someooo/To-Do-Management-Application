@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import '../../config/app_colors.dart';
 
 import '../utils/shared.dart';
@@ -28,11 +27,11 @@ class CustomCard extends StatelessWidget {
       elevation: elevation ?? 8,
       shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(radius ?? UIConstants.radius20),
-          side: allowBorder ? BorderSide(color: SharedColors.darkBlue) : BorderSide.none),
-      // borderRadius: BorderRadius.circular(12.r),
+          side: allowBorder
+              ? BorderSide(color: SharedColors.darkBlue)
+              : BorderSide.none),
       color: color,
-      // elevation: 4,
-      shadowColor: Get.theme.primaryColor.withAlpha(50),
+      shadowColor: Theme.of(context).primaryColor.withAlpha(50),
       child: Padding(
         padding: allowPadding ? UIConstants.allPadding : EdgeInsets.zero,
         child: child,

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:get/get.dart';
 
 import '../../config/app_colors.dart';
 import '../utils/responsive.dart';
@@ -136,7 +135,7 @@ class CustomFormField extends StatelessWidget {
                 : BorderSide.none,
             borderRadius: BorderRadius.all(Radius.circular(radius ?? 8)),
           ),
-          hintText: hintText != null ? hintText!.tr : hintText,
+          hintText: hintText,
         ),
       ),
     );

@@ -3,39 +3,29 @@ import 'dart:io';
 
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/foundation.dart';
-import 'package:get/get.dart';
 
 import '../utils/toast_utils.dart';
 
-/// Service responsible for monitoring global internet connectivity.
-/// Follows Clean Architecture & GetX architecture patterns.
-class NetworkService extends GetxService {
-  final Connectivity _connectivity = Connectivity();
-  StreamSubscription<List<ConnectivityResult>>? _subscription;
-
-  final RxBool _isConnected = true.obs;
-
-  /// Reactive boolean getter for current internet status.
-  bool get isConnected => _isConnected.value;
-  RxBool get isConnectedRx => _isConnected;
-
-  @override
-  void onInit() {
-    super.onInit();
+class NetworkService {
+  NetworkService() {
     _initConnectivity();
   }
 
-  @override
-  void onClose() {
+  final Connectivity _connectivity = Connectivity();
+  StreamSubscription<List<ConnectivityResult>>? _subscription;
+
+  final ValueNotifier<bool> isConnectedNotifier = ValueNotifier<bool>(true);
+
+  bool get isConnected => isConnectedNotifier.value;
+
+  void dispose() {
     _subscription?.cancel();
-    super.onClose();
+    isConnectedNotifier.dispose();
   }
 
   Future<void> _initConnectivity() async {
-    // Perform initial check
     await checkConnection();
 
-    // Subscribe to connectivity changes
     try {
       _subscription = _connectivity.onConnectivityChanged.listen(
         _handleConnectivityChange,
@@ -59,7 +49,6 @@ class NetworkService extends GetxService {
     _updateStatus(hasInternet);
   }
 
-  /// Manually trigger a connectivity and reachability check.
   Future<bool> checkConnection() async {
     try {
       final results = await _connectivity.checkConnectivity();
@@ -76,7 +65,6 @@ class NetworkService extends GetxService {
     return hasInternet;
   }
 
-  /// Performs a quick DNS lookup to verify true internet access.
   Future<bool> _hasRealInternetAccess() async {
     try {
       final result = await InternetAddress.lookup('example.com')
@@ -95,9 +83,9 @@ class NetworkService extends GetxService {
   }
 
   void _updateStatus(bool newStatus) {
-    if (_isConnected.value == newStatus) return;
+    if (isConnectedNotifier.value == newStatus) return;
 
-    _isConnected.value = newStatus;
+    isConnectedNotifier.value = newStatus;
 
     if (!newStatus) {
       ToastUtils.showNoInternetSnackbar();

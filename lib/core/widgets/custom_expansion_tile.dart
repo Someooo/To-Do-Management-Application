@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:get/get.dart';
 import '../enums/text_style_enum.dart';
 import 'custom_row.dart';
 import 'custom_text_widget.dart';
@@ -11,7 +10,11 @@ class CustomExpansionTile extends StatelessWidget {
   final String notes;
   final List<Item>? items;
 
-  const CustomExpansionTile({super.key, required this.title, required this.notes, required this.items});
+  const CustomExpansionTile(
+      {super.key,
+      required this.title,
+      required this.notes,
+      required this.items});
 
   @override
   Widget build(BuildContext context) {
@@ -20,7 +23,9 @@ class CustomExpansionTile extends StatelessWidget {
       children: [
         if (notes.isNotEmpty) ...[
           Align(
-            alignment: Get.locale?.languageCode == "ar" ? Alignment.centerRight : Alignment.centerLeft,
+            alignment: Localizations.localeOf(context).languageCode == "ar"
+                ? Alignment.centerRight
+                : Alignment.centerLeft,
             child: CustomTextWidget(
               text: notes,
               textThemeStyle: TextThemeStyleEnum.displaySmall,
@@ -38,7 +43,6 @@ class CustomExpansionTile extends StatelessWidget {
               final item = items![index];
               return Container(
                 padding: EdgeInsets.only(bottom: 15.h),
-                // color: Colors.pink,
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   spacing: 15.w,
@@ -157,23 +161,23 @@ class CustomExpansionDesign extends StatelessWidget {
   final String text;
   final List<Widget> children;
 
-  const CustomExpansionDesign({super.key, required this.text, required this.children});
+  const CustomExpansionDesign(
+      {super.key, required this.text, required this.children});
 
   @override
   Widget build(BuildContext context) {
-    final borderColor = Get.theme.primaryColor.withAlpha(150);
+    final theme = Theme.of(context);
+    final borderColor = theme.primaryColor.withAlpha(150);
 
     return ExpansionTile(
       dense: true,
       expandedAlignment: Alignment.centerLeft,
-      iconColor: Get.theme.colorScheme.secondary,
-      collapsedIconColor: Get.theme.colorScheme.secondary,
-      backgroundColor: Get.theme.colorScheme.onTertiaryContainer,
-      collapsedBackgroundColor: Get.theme.primaryColor.withAlpha(50),
+      iconColor: theme.colorScheme.secondary,
+      collapsedIconColor: theme.colorScheme.secondary,
+      backgroundColor: theme.colorScheme.onTertiaryContainer,
+      collapsedBackgroundColor: theme.primaryColor.withAlpha(50),
       childrenPadding: EdgeInsets.symmetric(horizontal: 15.w),
       tilePadding: EdgeInsets.symmetric(horizontal: 12.w),
-
-      // 🟢 Border radius + border color
       collapsedShape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(5),
         side: BorderSide(color: borderColor),
@@ -182,7 +186,6 @@ class CustomExpansionDesign extends StatelessWidget {
         borderRadius: BorderRadius.circular(5),
         side: BorderSide(color: borderColor),
       ),
-
       initiallyExpanded: false,
       title: CustomTextWidget(
         text: text,

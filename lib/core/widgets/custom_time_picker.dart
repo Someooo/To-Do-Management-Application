@@ -1,7 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:get/get.dart';
 import 'package:my_template/core/widgets/text_with_text_field.dart';
 
 class CustomTimePicker extends StatelessWidget {
@@ -29,9 +28,11 @@ class CustomTimePicker extends StatelessWidget {
 
             await showModalBottomSheet(
               context: context,
-              backgroundColor: Theme.of(context).bottomSheetTheme.backgroundColor,
+              backgroundColor:
+                  Theme.of(context).bottomSheetTheme.backgroundColor,
               builder: (context) {
-                int hour = selected.hourOfPeriod == 0 ? 12 : selected.hourOfPeriod;
+                int hour =
+                    selected.hourOfPeriod == 0 ? 12 : selected.hourOfPeriod;
                 int minute = selected.minute;
                 bool isAm = selected.period == DayPeriod.am;
 
@@ -45,7 +46,8 @@ class CustomTimePicker extends StatelessWidget {
                     children: [
                       Container(
                         height: 50.h,
-                        color: Theme.of(context).bottomSheetTheme.backgroundColor,
+                        color:
+                            Theme.of(context).bottomSheetTheme.backgroundColor,
                         alignment: Alignment.centerRight,
                         padding: EdgeInsets.symmetric(horizontal: 20.w),
                         child: GestureDetector(
@@ -53,12 +55,13 @@ class CustomTimePicker extends StatelessWidget {
                             int finalHour = hour % 12;
                             if (!isAm) finalHour += 12;
 
-                            final newTime = TimeOfDay(hour: finalHour, minute: minute);
+                            final newTime =
+                                TimeOfDay(hour: finalHour, minute: minute);
                             onChanged(newTime);
                             Navigator.pop(context);
                           },
                           child: Text(
-                            'choose'.tr,
+                            'choose',
                             style: Theme.of(context).textTheme.displayMedium,
                           ),
                         ),
@@ -68,21 +71,22 @@ class CustomTimePicker extends StatelessWidget {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             MediaQuery(
-                              data: MediaQuery.of(context).copyWith(alwaysUse24HourFormat: false),
+                              data: MediaQuery.of(context)
+                                  .copyWith(alwaysUse24HourFormat: false),
                               child: CupertinoTheme(
                                 data: const CupertinoThemeData(
-                                  brightness: Brightness.light, // 👈 important to force light theme
+                                  brightness: Brightness.light,
                                   primaryColor: Colors.black,
                                   textTheme: CupertinoTextThemeData(
                                     dateTimePickerTextStyle: TextStyle(
-                                      color: Colors.black, // 👈 enforce black
+                                      color: Colors.black,
                                       fontSize: 20,
                                     ),
                                   ),
                                 ),
                                 child: DefaultTextStyle(
                                   style: const TextStyle(
-                                    color: Colors.black, // 👈 still needed for Android
+                                    color: Colors.black,
                                     fontSize: 20,
                                   ),
                                   child: CupertinoTimerPicker(
@@ -120,8 +124,9 @@ class CustomTimePicker extends StatelessWidget {
               width: double.infinity,
               text: text,
               hintText: text,
-              controller:
-                  time != null ? TextEditingController(text: time.format(context)) : TextEditingController(),
+              controller: time != null
+                  ? TextEditingController(text: time.format(context))
+                  : TextEditingController(),
             ),
           ),
         );

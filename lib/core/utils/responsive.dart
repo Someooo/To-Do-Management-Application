@@ -1,11 +1,5 @@
-import 'dart:ui';
-
 import 'package:flutter/widgets.dart';
 
-/// Utility helpers to determine the current form factor of the device.
-///
-/// This implementation avoids requiring a `BuildContext` so the checks can be
-/// performed in widgets where only static access is available.
 class Responsive {
   static const double _tabletBreakpoint = 600;
   static const double _desktopBreakpoint = 1024;
@@ -24,4 +18,3 @@ class Responsive {
 
   static bool get isDesktop => _logicalWidth >= _desktopBreakpoint;
 }
-

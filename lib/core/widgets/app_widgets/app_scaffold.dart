@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:get/get.dart';
+
 
 import '../../../config/app_colors.dart';
 import '../../utils/app_text_style.dart';
@@ -72,7 +72,7 @@ class AppScaffold extends StatelessWidget {
                   ),
                   leading: showBackButton
                       ? InkWell(
-                          onTap: onBackPressed ?? () => Get.back(),
+                          onTap: onBackPressed ?? () => Navigator.of(context).pop(),
                           splashColor: Colors.transparent,
                           highlightColor: Colors.transparent,
                           child:  Icon(

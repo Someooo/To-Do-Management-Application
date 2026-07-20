@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:get/get.dart';
 
 import 'custom_text_widget.dart';
 
@@ -11,13 +10,15 @@ class IconAndText extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return   Row(
-              children: [
-               Icon(icon , color: Colors.black, size: 23.sp),
-                SizedBox(width: 3.w),
-               CustomTextWidget(text: title.tr , fontWeight: FontWeight.w600,)
-              ],
-        
-            );
+    return Row(
+      children: [
+        Icon(icon, color: Colors.black, size: 23.sp),
+        SizedBox(width: 3.w),
+        CustomTextWidget(
+          text: title,
+          fontWeight: FontWeight.w600,
+        )
+      ],
+    );
   }
 }

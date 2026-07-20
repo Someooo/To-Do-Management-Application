@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:get/get.dart';
 
 import '../../config/app_colors.dart';
 import '../utils/shared.dart';
 import 'custom_text_widget.dart';
-
 
 class CustomTabbarWidget extends StatelessWidget {
   final TabController? controller;
@@ -28,7 +26,7 @@ class CustomTabbarWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     final currentIndex = ValueNotifier<int>(controller?.index ?? 0);
     controller?.addListener(() {
-      if (controller?.indexIsChanging ?? false) return; // ignore index while changing
+      if (controller?.indexIsChanging ?? false) return;
 
       currentIndex.value = controller?.index ?? 0;
     });
@@ -37,13 +35,10 @@ class CustomTabbarWidget extends StatelessWidget {
           ? EdgeInsets.symmetric(horizontal: UIConstants.horizontalPaddingValue)
           : EdgeInsets.zero,
       isScrollable: false,
-      // indicatorColor: Get.theme.primaryColor,
       controller: controller,
       indicatorSize: TabBarIndicatorSize.tab,
-      dividerColor: Get.theme.colorScheme.primaryContainer,
+      dividerColor: Theme.of(context).colorScheme.primaryContainer,
       indicatorWeight: 3.h,
-
-  
       indicator: BoxDecoration(
         color: indicatorColor ?? AppLightColors.primaryLightColor,
         borderRadius: BorderRadius.circular(5.r),
@@ -51,11 +46,10 @@ class CustomTabbarWidget extends StatelessWidget {
         boxShadow: [
           BoxShadow(
             color: SharedColors.seaBlue,
-          
           ),
         ],
         border: Border.all(
-          color: Get.theme.colorScheme.primary,
+          color: Theme.of(context).colorScheme.primary,
           width: 1.w,
         ),
       ),
@@ -71,10 +65,12 @@ class CustomTabbarWidget extends StatelessWidget {
               builder: (context, idx, child) {
                 final bool isSelected = idx == index;
                 return CustomTextWidget(
-                  text: tabs[index].tr,
+                  text: tabs[index],
                   maxLines: 3,
                   textAlign: TextAlign.center,
-                  color: isSelected ? Get.theme.colorScheme.onSurface : null,
+                  color: isSelected
+                      ? Theme.of(context).colorScheme.onSurface
+                      : null,
                   fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
                   height: 1,
                 );

@@ -1,7 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'text_with_text_field.dart';
 
@@ -65,7 +64,7 @@ class CustomDatePicker extends StatelessWidget {
                                   Navigator.pop(context);
                                 },
                                 child: Text(
-                                  'choose'.tr,
+                                  'choose',
                                   style: Theme.of(context).textTheme.displayMedium,
                                 ),
                               ),

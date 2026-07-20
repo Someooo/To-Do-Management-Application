@@ -1,26 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:my_template/config/app_routes.dart';
-import 'package:my_template/core/controllers/auth_controller.dart';
-
-class AppRouter {
-  static const String splashRoute = '/';
-  static const String loginRoute = '/auth/login';
-
-  static final List<GetPage<dynamic>> routes = <GetPage<dynamic>>[
-    GetPage(
-      name: splashRoute,
-      page: () => const SplashPage(),
-      binding: BindingsBuilder(() {
-        Get.find<AuthController>().initialize();
-      }),
-    ),
-    GetPage(
-      name: loginRoute,
-      page: () => const LoginPlaceholderPage(),
-    ),
-  ];
-}
 
 class SplashPage extends StatefulWidget {
   const SplashPage({super.key});
@@ -38,7 +17,9 @@ class _SplashPageState extends State<SplashPage> {
 
   void _startSplashDelay() {
     Future.delayed(const Duration(seconds: 2), () {
-      Get.offAllNamed(AppRoutes.catalog);
+      if (mounted) {
+        Navigator.of(context).pushReplacementNamed(AppRoutes.catalog);
+      }
     });
   }
 
@@ -78,7 +59,9 @@ class LoginPlaceholderPage extends StatelessWidget {
       appBar: AppBar(title: const Text('Login')),
       body: Center(
         child: ElevatedButton(
-          onPressed: () => Get.find<AuthController>().login('fake-token'),
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
           child: const Text('Perform login'),
         ),
       ),
