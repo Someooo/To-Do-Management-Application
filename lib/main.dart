@@ -6,7 +6,6 @@ import 'package:my_template/di.dart';
 import 'firebase_options.dart';
 
 Future<void> main() async {
-  // Preserve the native splash screen during initialization
   final widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
   FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
 
@@ -16,9 +15,7 @@ Future<void> main() async {
 
   await configureDependencies();
 
-  // Remove the native splash screen now that the app is ready
   FlutterNativeSplash.remove();
 
-  // Launch the app
   runApp(const AppEntrypoint());
 }

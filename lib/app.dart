@@ -1,5 +1,3 @@
-// Defines the root widget configuring theme, localization, and routing for the app shell.
-
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:my_template/config/app_routes.dart';

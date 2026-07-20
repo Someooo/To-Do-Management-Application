@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:my_template/config/app_routes.dart';
+import 'package:my_template/core/utils/app_snack_bar.dart';
 import 'package:my_template/di.dart';
 
 import '../bloc/auth_bloc.dart';
@@ -49,17 +50,13 @@ class _LoginPageContentState extends State<_LoginPageContent> {
 
     if (email.isEmpty) {
       debugPrint('⚠️ [LoginPage] Validation failed: Email is empty');
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please enter your email address')),
-      );
+      AppSnackBar.showError(context, 'Please enter your email address');
       return;
     }
 
     if (password.isEmpty) {
       debugPrint('⚠️ [LoginPage] Validation failed: Password is empty');
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please enter your password')),
-      );
+      AppSnackBar.showError(context, 'Please enter your password');
       return;
     }
 
@@ -86,17 +83,13 @@ class _LoginPageContentState extends State<_LoginPageContent> {
             } else if (state is AuthAuthenticated) {
               debugPrint(
                   '📱 [LoginPage] State received: AuthAuthenticated (User ID: ${state.user.id})');
+              AppSnackBar.showSuccess(context, 'Login successful.');
               debugPrint('📱 [LoginPage] Navigating to catalog screen...');
               Navigator.of(context).pushReplacementNamed(AppRoutes.catalog);
             } else if (state is AuthFailure) {
               debugPrint(
                   '📱 [LoginPage] State received: AuthFailure (Message: ${state.message})');
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text(state.message),
-                  backgroundColor: Colors.red.shade700,
-                ),
-              );
+              AppSnackBar.showError(context, state.message);
             }
           },
           builder: (context, state) {
@@ -115,6 +108,29 @@ class _LoginPageContentState extends State<_LoginPageContent> {
                   const SizedBox(height: 16),
                   PasswordTextField(
                     controller: _passwordController,
+                  ),
+                  const SizedBox(height: 8),
+                  Align(
+                    alignment: Alignment.centerRight,
+                    child: TextButton(
+                      onPressed: () {
+                        Navigator.of(context)
+                            .pushNamed(AppRoutes.forgotPassword);
+                      },
+                      style: TextButton.styleFrom(
+                        padding: EdgeInsets.zero,
+                        minimumSize: Size.zero,
+                        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                      ),
+                      child: const Text(
+                        'Forgot password?',
+                        style: TextStyle(
+                          fontSize: 13,
+                          fontWeight: FontWeight.w600,
+                          color: Color(0xFF0060A9),
+                        ),
+                      ),
+                    ),
                   ),
                   const SizedBox(height: 20),
                   LoginButton(

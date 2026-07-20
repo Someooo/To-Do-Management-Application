@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:my_template/config/app_routes.dart';
+import 'package:my_template/core/utils/app_snack_bar.dart';
 import 'package:my_template/di.dart';
 
 import '../bloc/auth_bloc.dart';
@@ -50,30 +51,22 @@ class _RegisterPageContentState extends State<_RegisterPageContent> {
     final confirmPassword = _confirmPasswordController.text.trim();
 
     if (email.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please enter your email address')),
-      );
+      AppSnackBar.showError(context, 'Please enter your email address');
       return;
     }
 
     if (password.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please enter your password')),
-      );
+      AppSnackBar.showError(context, 'Please enter your password');
       return;
     }
 
     if (confirmPassword.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please confirm your password')),
-      );
+      AppSnackBar.showError(context, 'Please confirm your password');
       return;
     }
 
     if (password != confirmPassword) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Passwords do not match')),
-      );
+      AppSnackBar.showError(context, 'Passwords do not match');
       return;
     }
 
@@ -95,14 +88,10 @@ class _RegisterPageContentState extends State<_RegisterPageContent> {
         child: BlocConsumer<AuthBloc, AuthState>(
           listener: (context, state) {
             if (state is AuthAuthenticated) {
+              AppSnackBar.showSuccess(context, 'Account created successfully.');
               Navigator.of(context).pushReplacementNamed(AppRoutes.catalog);
             } else if (state is AuthFailure) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text(state.message),
-                  backgroundColor: Colors.red.shade700,
-                ),
-              );
+              AppSnackBar.showError(context, state.message);
             }
           },
           builder: (context, state) {

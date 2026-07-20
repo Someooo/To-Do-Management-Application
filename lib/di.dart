@@ -1,5 +1,3 @@
-// Centralized dependency registration using GetIt.
-
 import 'package:get_it/get_it.dart';
 import 'package:my_template/core/services/api_service.dart';
 import 'package:my_template/core/services/network_service.dart';
@@ -7,6 +5,7 @@ import 'package:my_template/core/services/storage_service.dart';
 import 'package:my_template/features/authentication/data/datasources/auth_remote_data_source.dart';
 import 'package:my_template/features/authentication/data/repositories/auth_repository_impl.dart';
 import 'package:my_template/features/authentication/domain/repositories/auth_repository.dart';
+import 'package:my_template/features/authentication/domain/usecases/forgot_password_usecase.dart';
 import 'package:my_template/features/authentication/domain/usecases/get_current_user_usecase.dart';
 import 'package:my_template/features/authentication/domain/usecases/login_usecase.dart';
 import 'package:my_template/features/authentication/domain/usecases/logout_usecase.dart';
@@ -31,11 +30,13 @@ Future<void> configureDependencies() async {
   getIt.registerLazySingleton(() => RegisterUseCase(repository: getIt()));
   getIt.registerLazySingleton(() => LogoutUseCase(repository: getIt()));
   getIt.registerLazySingleton(() => GetCurrentUserUseCase(repository: getIt()));
+  getIt.registerLazySingleton(() => ForgotPasswordUseCase(repository: getIt()));
 
   getIt.registerFactory(() => AuthBloc(
         loginUseCase: getIt(),
         registerUseCase: getIt(),
         logoutUseCase: getIt(),
         getCurrentUserUseCase: getIt(),
+        forgotPasswordUseCase: getIt(),
       ));
 }

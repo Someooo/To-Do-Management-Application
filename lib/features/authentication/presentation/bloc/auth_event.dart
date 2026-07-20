@@ -37,6 +37,17 @@ class AuthLogoutRequested extends AuthEvent {
   const AuthLogoutRequested();
 }
 
+class AuthForgotPasswordRequested extends AuthEvent {
+  final String email;
+
+  const AuthForgotPasswordRequested({
+    required this.email,
+  });
+
+  @override
+  List<Object?> get props => [email];
+}
+
 class AuthCheckRequested extends AuthEvent {
   const AuthCheckRequested();
 }

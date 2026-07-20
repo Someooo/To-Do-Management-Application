@@ -16,7 +16,9 @@ Future<DateTime?> showLocalizedDatePicker({
 
   try {
     await initializeDateFormatting(currentLocale.languageCode, null);
-  } catch (e) {}
+  } catch (_) {
+    // Ignore date formatting initialization failure
+  }
 
   final String localizedCancel =
       cancelText ?? (currentLocale.languageCode == 'ar' ? 'إلغاء' : 'Cancel');
@@ -55,7 +57,9 @@ Future<TimeOfDay?> showLocalizedTimePicker({
 
   try {
     await initializeDateFormatting(currentLocale.languageCode, null);
-  } catch (e) {}
+  } catch (_) {
+    // Ignore date formatting initialization failure
+  }
 
   final String localizedCancel =
       cancelText ?? (currentLocale.languageCode == 'ar' ? 'إلغاء' : 'Cancel');
