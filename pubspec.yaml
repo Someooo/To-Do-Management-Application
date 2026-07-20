@@ -41,8 +41,8 @@ dev_dependencies:
 flutter:
   uses-material-design: true
   assets:
-    - assets/images/test_test.jpg
     - assets/images/taskLogo.png   # Used by flutter_native_splash (see flutter_native_splash.yaml)
+    - assets/images/recovjo_logo.jpg
   # assets:
   #   - assets/images/
   #   - assets/icons/

@@ -11,6 +11,7 @@ class AppRoutes {
 
   static Map<String, WidgetBuilder> get routes => {
         initial: (context) => const SplashPage(),
+        catalog: (context) => const CatalogPlaceholderPage(),
         login: (context) => const LoginPlaceholderPage(),
       };
 }
