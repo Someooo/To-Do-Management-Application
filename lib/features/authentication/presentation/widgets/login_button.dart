@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 
 class LoginButton extends StatelessWidget {
+  final String label;
   final VoidCallback? onPressed;
   final bool isLoading;
 
   const LoginButton({
     super.key,
+    this.label = 'Log in',
     this.onPressed,
     this.isLoading = false,
   });
@@ -36,18 +38,18 @@ class LoginButton extends StatelessWidget {
                   valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
                 ),
               )
-            : const Row(
+            : Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
-                    'Log in',
-                    style: TextStyle(
+                    label,
+                    style: const TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.w600,
                     ),
                   ),
-                  SizedBox(width: 8),
-                  Icon(
+                  const SizedBox(width: 8),
+                  const Icon(
                     Icons.arrow_forward_rounded,
                     size: 20,
                   ),

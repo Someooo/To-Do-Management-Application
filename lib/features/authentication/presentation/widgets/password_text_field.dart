@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
 
 class PasswordTextField extends StatefulWidget {
+  final String label;
+  final String hintText;
   final TextEditingController? controller;
   final ValueChanged<String>? onChanged;
 
   const PasswordTextField({
     super.key,
+    this.label = 'Password',
+    this.hintText = '••••••••',
     this.controller,
     this.onChanged,
   });
@@ -26,11 +30,11 @@ class _PasswordTextFieldState extends State<PasswordTextField> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Padding(
-          padding: EdgeInsets.only(left: 4, bottom: 6),
+        Padding(
+          padding: const EdgeInsets.only(left: 4, bottom: 6),
           child: Text(
-            'Password',
-            style: TextStyle(
+            widget.label,
+            style: const TextStyle(
               fontSize: 12,
               fontWeight: FontWeight.w600,
               color: labelColor,
@@ -52,7 +56,7 @@ class _PasswordTextFieldState extends State<PasswordTextField> {
               color: textColor,
             ),
             decoration: InputDecoration(
-              hintText: '••••••••',
+              hintText: widget.hintText,
               hintStyle: TextStyle(
                 fontSize: 15,
                 color: Colors.grey.shade400,

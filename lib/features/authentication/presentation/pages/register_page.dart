@@ -12,43 +12,44 @@ import '../widgets/login_header.dart';
 import '../widgets/password_text_field.dart';
 import '../widgets/signup_prompt_widget.dart';
 
-class LoginPage extends StatelessWidget {
-  const LoginPage({super.key});
+class RegisterPage extends StatelessWidget {
+  const RegisterPage({super.key});
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider<AuthBloc>(
       create: (context) => getIt<AuthBloc>(),
-      child: const _LoginPageContent(),
+      child: const _RegisterPageContent(),
     );
   }
 }
 
-class _LoginPageContent extends StatefulWidget {
-  const _LoginPageContent();
+class _RegisterPageContent extends StatefulWidget {
+  const _RegisterPageContent();
 
   @override
-  State<_LoginPageContent> createState() => _LoginPageContentState();
+  State<_RegisterPageContent> createState() => _RegisterPageContentState();
 }
 
-class _LoginPageContentState extends State<_LoginPageContent> {
+class _RegisterPageContentState extends State<_RegisterPageContent> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
+  final _confirmPasswordController = TextEditingController();
 
   @override
   void dispose() {
     _emailController.dispose();
     _passwordController.dispose();
+    _confirmPasswordController.dispose();
     super.dispose();
   }
 
-  void _onLoginPressed() {
-    debugPrint('📱 [LoginPage] Login button pressed');
+  void _onRegisterPressed() {
     final email = _emailController.text.trim();
     final password = _passwordController.text.trim();
+    final confirmPassword = _confirmPasswordController.text.trim();
 
     if (email.isEmpty) {
-      debugPrint('⚠️ [LoginPage] Validation failed: Email is empty');
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Please enter your email address')),
       );
@@ -56,16 +57,28 @@ class _LoginPageContentState extends State<_LoginPageContent> {
     }
 
     if (password.isEmpty) {
-      debugPrint('⚠️ [LoginPage] Validation failed: Password is empty');
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Please enter your password')),
       );
       return;
     }
 
-    debugPrint('📱 [LoginPage] Validation passed for email: $email');
+    if (confirmPassword.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Please confirm your password')),
+      );
+      return;
+    }
+
+    if (password != confirmPassword) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Passwords do not match')),
+      );
+      return;
+    }
+
     context.read<AuthBloc>().add(
-          AuthLoginRequested(
+          AuthRegisterRequested(
             email: email,
             password: password,
           ),
@@ -81,16 +94,9 @@ class _LoginPageContentState extends State<_LoginPageContent> {
       body: SafeArea(
         child: BlocConsumer<AuthBloc, AuthState>(
           listener: (context, state) {
-            if (state is AuthLoading) {
-              debugPrint('📱 [LoginPage] State received: AuthLoading');
-            } else if (state is AuthAuthenticated) {
-              debugPrint(
-                  '📱 [LoginPage] State received: AuthAuthenticated (User ID: ${state.user.id})');
-              debugPrint('📱 [LoginPage] Navigating to catalog screen...');
+            if (state is AuthAuthenticated) {
               Navigator.of(context).pushReplacementNamed(AppRoutes.catalog);
             } else if (state is AuthFailure) {
-              debugPrint(
-                  '📱 [LoginPage] State received: AuthFailure (Message: ${state.message})');
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
                   content: Text(state.message),
@@ -107,25 +113,37 @@ class _LoginPageContentState extends State<_LoginPageContent> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  const LoginHeader(),
+                  const LoginHeader(
+                    title: 'Create Account',
+                    subtitle: 'Sign up to get started',
+                  ),
                   const SizedBox(height: 32),
                   EmailTextField(
                     controller: _emailController,
                   ),
                   const SizedBox(height: 16),
                   PasswordTextField(
+                    label: 'Password',
                     controller: _passwordController,
                   ),
-                  const SizedBox(height: 20),
+                  const SizedBox(height: 16),
+                  PasswordTextField(
+                    label: 'Confirm Password',
+                    controller: _confirmPasswordController,
+                  ),
+                  const SizedBox(height: 24),
                   LoginButton(
+                    label: 'Register',
                     isLoading: isLoading,
-                    onPressed: isLoading ? null : _onLoginPressed,
+                    onPressed: isLoading ? null : _onRegisterPressed,
                   ),
                   const SizedBox(height: 32),
                   SignupPromptWidget(
+                    promptText: 'Already have an account? ',
+                    actionText: 'Log in',
                     onSignupPressed: () {
                       Navigator.of(context)
-                          .pushReplacementNamed(AppRoutes.register);
+                          .pushReplacementNamed(AppRoutes.login);
                     },
                   ),
                   const SizedBox(height: 16),
