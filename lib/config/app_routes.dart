@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../app_router.dart';
+import '../features/authentication/presentation/pages/login_page.dart';
 
 class AppRoutes {
   static const String initial = '/';
@@ -12,6 +13,6 @@ class AppRoutes {
   static Map<String, WidgetBuilder> get routes => {
         initial: (context) => const SplashPage(),
         catalog: (context) => const CatalogPlaceholderPage(),
-        login: (context) => const LoginPlaceholderPage(),
+        login: (context) => const LoginPage(),
       };
 }

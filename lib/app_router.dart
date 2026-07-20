@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:my_template/config/app_routes.dart';
 
@@ -13,6 +14,7 @@ class _SplashPageState extends State<SplashPage>
   late final AnimationController _animationController;
   late final Animation<double> _fadeAnimation;
   late final Animation<Offset> _slideAnimation;
+  Timer? _navigationTimer;
 
   static const Color _greenAccent = Color(0xFF059669);
 
@@ -44,14 +46,15 @@ class _SplashPageState extends State<SplashPage>
 
   @override
   void dispose() {
+    _navigationTimer?.cancel();
     _animationController.dispose();
     super.dispose();
   }
 
   void _startSplashDelay() {
-    Future.delayed(const Duration(seconds: 2), () {
+    _navigationTimer = Timer(const Duration(seconds: 5), () {
       if (mounted) {
-        Navigator.of(context).pushReplacementNamed(AppRoutes.catalog);
+        Navigator.of(context).pushReplacementNamed(AppRoutes.login);
       }
     });
   }

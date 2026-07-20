@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport"/>
+<title>Focus - Splash</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "surface-variant": "#e2e2e6",
+                    "on-surface-variant": "#404752",
+                    "tertiary-container": "#9ca0a5",
+                    "secondary-fixed": "#d3e5f6",
+                    "on-secondary-container": "#556675",
+                    "error-container": "#ffdad6",
+                    "on-primary": "#ffffff",
+                    "surface-container-low": "#f3f3f7",
+                    "on-tertiary-fixed-variant": "#43474b",
+                    "secondary-container": "#d3e5f6",
+                    "primary-fixed": "#d3e4ff",
+                    "on-primary-fixed": "#001c38",
+                    "on-tertiary-fixed": "#181c20",
+                    "inverse-primary": "#a2c9ff",
+                    "tertiary-fixed": "#dfe3e8",
+                    "primary-container": "#4da3ff",
+                    "on-tertiary": "#ffffff",
+                    "background": "#f9f9fd",
+                    "secondary-fixed-dim": "#b7c9d9",
+                    "outline": "#717783",
+                    "on-secondary-fixed-variant": "#384956",
+                    "tertiary-fixed-dim": "#c3c7cc",
+                    "inverse-on-surface": "#f0f0f4",
+                    "on-primary-container": "#003866",
+                    "primary-fixed-dim": "#a2c9ff",
+                    "on-error-container": "#93000a",
+                    "outline-variant": "#c0c7d4",
+                    "surface": "#f9f9fd",
+                    "surface-tint": "#0060a9",
+                    "surface-dim": "#d9dade",
+                    "surface-bright": "#f9f9fd",
+                    "surface-container-high": "#e8e8ec",
+                    "surface-container-lowest": "#ffffff",
+                    "error": "#ba1a1a",
+                    "on-primary-fixed-variant": "#004881",
+                    "secondary": "#4f606e",
+                    "on-surface": "#1a1c1f",
+                    "on-secondary-fixed": "#0c1d29",
+                    "tertiary": "#5b5f63",
+                    "on-error": "#ffffff",
+                    "primary": "#0060a9",
+                    "on-secondary": "#ffffff",
+                    "surface-container-highest": "#e2e2e6",
+                    "on-tertiary-container": "#33373b",
+                    "surface-container": "#eeedf2",
+                    "on-background": "#1a1c1f",
+                    "inverse-surface": "#2f3034"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "sm": "12px",
+                    "xs": "8px",
+                    "margin-mobile": "20px",
+                    "gutter": "16px",
+                    "md": "16px",
+                    "lg": "24px",
+                    "xl": "32px",
+                    "base": "4px"
+            },
+            "fontFamily": {
+                    "headline-lg-mobile": ["Inter"],
+                    "body-md": ["Inter"],
+                    "title-md": ["Inter"],
+                    "label-md": ["Inter"],
+                    "headline-lg": ["Inter"],
+                    "display-lg": ["Inter"],
+                    "body-sm": ["Inter"]
+            },
+            "fontSize": {
+                    "headline-lg-mobile": ["28px", {"lineHeight": "36px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                    "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                    "title-md": ["18px", {"lineHeight": "24px", "fontWeight": "600"}],
+                    "label-md": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                    "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                    "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body {
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            background-color: #f9f9fd;
+        }
+
+        .splash-gradient {
+            background: linear-gradient(180deg, #FFFFFF 0%, #DCEEFF 100%);
+        }
+
+        .logo-container {
+            animation: fadeInScale 1.2s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+        }
+
+        @keyframes fadeInScale {
+            0% {
+                opacity: 0;
+                transform: scale(0.8) translateY(10px);
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+        }
+
+        .loading-bar-container {
+            width: 140px;
+            height: 4px;
+            background: rgba(0, 96, 169, 0.1);
+            border-radius: 99px;
+            overflow: hidden;
+        }
+
+        .loading-bar-progress {
+            width: 0%;
+            height: 100%;
+            background: #4DA3FF;
+            border-radius: 99px;
+            animation: progress 2.5s cubic-bezier(0.65, 0, 0.35, 1) forwards;
+        }
+
+        @keyframes progress {
+            0% { width: 0%; }
+            30% { width: 25%; }
+            60% { width: 70%; }
+            100% { width: 100%; }
+        }
+
+        .soft-float {
+            animation: float 4s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-8px); }
+        }
+
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+</head>
+<body class="antialiased selection:bg-primary-container selection:text-on-primary-container">
+<!-- Splash Screen Wrapper -->
+<!-- According to Shell Visibility Rule: Navigation is suppressed for splash/onboarding screens -->
+<main class="relative h-screen w-full flex flex-col items-center justify-center splash-gradient overflow-hidden">
+<!-- Background Atmospheric Element (Subtle Gradient Blur) -->
+<div class="absolute top-[-10%] right-[-10%] w-80 h-80 bg-primary-container/10 rounded-full blur-[80px]"></div>
+<div class="absolute bottom-[-5%] left-[-10%] w-64 h-64 bg-secondary-container/20 rounded-full blur-[60px]"></div>
+<!-- Main Content Identity -->
+<div class="logo-container flex flex-col items-center z-10">
+<!-- App Logo -->
+<div class="relative w-32 h-32 mb-lg soft-float">
+<img alt="TaskFlow Logo" class="w-full h-full object-contain drop-shadow-xl" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDX77jxPwTJ1_INFPJa8ux9n5EYeK_KTZe0YSravBKqdpxndjWICuvxM9kHi0jMR697-ICWnKn8HUOjloNgUtgftimQOmQw5BSiiGykBj-Mh1xlOnuoMNgRq6wSgvjFS_TGCeoy1GMUos_-AFnjbsXlIZQASBx0DDWk4Mq8swqGExTG1jUyUKsWqF2aCRC-z8Dl3E9UjliUpCAVS5Pw9veVBPhNoiSSOdqA4jEtcMHu_A3ILFKz1Q8OxdP_UQwd1Pcb5IGl3G58rai2"/>
+</div>
+<!-- Brand Name -->
+<h1 class="font-headline-lg-mobile text-headline-lg-mobile text-on-background tracking-tight mb-xs">
+                Focus
+            </h1>
+<!-- Tagline -->
+<p class="font-label-md text-label-md text-on-surface-variant uppercase tracking-[0.2em] opacity-80">
+                Elevate your workflow
+            </p>
+</div>
+<!-- Loading Indicator -->
+<div class="absolute bottom-24 flex flex-col items-center gap-sm">
+<div class="loading-bar-container">
+<div class="loading-bar-progress"></div>
+</div>
+<span class="font-label-md text-label-md text-outline animate-pulse">Initializing...</span>
+</div>
+<!-- Visual Footer Accents -->
+<div class="absolute bottom-margin-mobile px-margin-mobile w-full flex justify-between items-center text-outline/40">
+<span class="font-label-md text-[10px] uppercase tracking-widest">v2.4.0</span>
+<div class="flex gap-xs">
+<span class="material-symbols-outlined text-[16px]">verified_user</span>
+<span class="font-label-md text-[10px] uppercase tracking-widest">End-to-end encrypted</span>
+</div>
+</div>
+</main>
+<!-- Optional Interaction Script -->
+<script>
+        // Simulate a transition to the next screen after loading finishes
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                // In a real app, this would redirect or mount the dashboard
+                console.log('Splash sequence complete. Transitioning to Home...');
+            }, 3000);
+        });
+
+        // Simple haptic-like interaction on press
+        document.body.addEventListener('touchstart', (e) => {
+            // Placeholder for haptic feedback triggers
+        }, {passive: true});
+    </script>
+</body></html>
