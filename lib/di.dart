@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get_it/get_it.dart';
 import 'package:my_template/core/services/api_service.dart';
 import 'package:my_template/core/services/network_service.dart';
@@ -11,6 +12,14 @@ import 'package:my_template/features/authentication/domain/usecases/login_usecas
 import 'package:my_template/features/authentication/domain/usecases/logout_usecase.dart';
 import 'package:my_template/features/authentication/domain/usecases/register_usecase.dart';
 import 'package:my_template/features/authentication/presentation/bloc/auth_bloc.dart';
+import 'package:my_template/features/tasks/data/datasources/task_remote_data_source.dart';
+import 'package:my_template/features/tasks/data/repositories/task_repository_impl.dart';
+import 'package:my_template/features/tasks/domain/repositories/task_repository.dart';
+import 'package:my_template/features/tasks/domain/usecases/add_task_usecase.dart';
+import 'package:my_template/features/tasks/domain/usecases/delete_task_usecase.dart';
+import 'package:my_template/features/tasks/domain/usecases/get_tasks_usecase.dart';
+import 'package:my_template/features/tasks/domain/usecases/update_task_usecase.dart';
+import 'package:my_template/features/tasks/presentation/bloc/task_bloc.dart';
 
 final getIt = GetIt.instance;
 
@@ -38,5 +47,23 @@ Future<void> configureDependencies() async {
         logoutUseCase: getIt(),
         getCurrentUserUseCase: getIt(),
         forgotPasswordUseCase: getIt(),
+      ));
+
+  // Task Feature
+  getIt.registerLazySingleton<TaskRemoteDataSource>(
+      () => TaskRemoteDataSourceImpl(firestore: FirebaseFirestore.instance));
+  getIt.registerLazySingleton<TaskRepository>(
+      () => TaskRepositoryImpl(remoteDataSource: getIt()));
+
+  getIt.registerLazySingleton(() => GetTasksUseCase(repository: getIt()));
+  getIt.registerLazySingleton(() => AddTaskUseCase(repository: getIt()));
+  getIt.registerLazySingleton(() => UpdateTaskUseCase(repository: getIt()));
+  getIt.registerLazySingleton(() => DeleteTaskUseCase(repository: getIt()));
+
+  getIt.registerFactory(() => TaskBloc(
+        getTasksUseCase: getIt(),
+        addTaskUseCase: getIt(),
+        updateTaskUseCase: getIt(),
+        deleteTaskUseCase: getIt(),
       ));
 }

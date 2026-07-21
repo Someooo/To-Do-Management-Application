@@ -1,0 +1,251 @@
+import 'package:flutter/material.dart';
+import '../../domain/entities/task_entity.dart';
+import 'due_date_picker_field.dart';
+import 'save_task_button.dart';
+import 'task_priority_dropdown.dart';
+import 'task_status_dropdown.dart';
+
+class TaskFormWidget extends StatefulWidget {
+  final ValueChanged<TaskEntity> onSubmit;
+  final VoidCallback onCancel;
+  final bool isLoading;
+
+  const TaskFormWidget({
+    super.key,
+    required this.onSubmit,
+    required this.onCancel,
+    this.isLoading = false,
+  });
+
+  @override
+  State<TaskFormWidget> createState() => _TaskFormWidgetState();
+}
+
+class _TaskFormWidgetState extends State<TaskFormWidget> {
+  final _formKey = GlobalKey<FormState>();
+  final _titleController = TextEditingController();
+  final _descriptionController = TextEditingController();
+
+  TaskPriority _priority = TaskPriority.medium;
+  TaskStatus _status = TaskStatus.todo;
+  DateTime? _dueDate;
+
+  @override
+  void dispose() {
+    _titleController.dispose();
+    _descriptionController.dispose();
+    super.dispose();
+  }
+
+  void _onSavePressed() {
+    if (!(_formKey.currentState?.validate() ?? false)) {
+      return;
+    }
+
+    final task = TaskEntity(
+      id: '',
+      title: _titleController.text.trim(),
+      description: _descriptionController.text.trim(),
+      priority: _priority,
+      status: _status,
+      dueDate: _dueDate,
+      createdAt: DateTime.now(),
+      updatedAt: DateTime.now(),
+    );
+
+    widget.onSubmit(task);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    const labelColor = Color(0xFF404752);
+    const inputBgColor = Color(0xFFF3F3F7);
+    const textColor = Color(0xFF1A1C1F);
+
+    return Form(
+      key: _formKey,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          // Title Field
+          const Padding(
+            padding: EdgeInsets.only(left: 4, bottom: 6),
+            child: Text(
+              'Task Title',
+              style: TextStyle(
+                fontSize: 12,
+                fontWeight: FontWeight.w600,
+                color: labelColor,
+                letterSpacing: 0.5,
+              ),
+            ),
+          ),
+          TextFormField(
+            controller: _titleController,
+            validator: (value) {
+              if (value == null || value.trim().isEmpty) {
+                return 'Please enter a task title';
+              }
+              return null;
+            },
+            style: const TextStyle(fontSize: 15, color: textColor),
+            decoration: InputDecoration(
+              filled: true,
+              fillColor: inputBgColor,
+              hintText: 'Enter task title',
+              hintStyle: TextStyle(fontSize: 15, color: Colors.grey.shade400),
+              prefixIcon: const Icon(
+                Icons.title_rounded,
+                color: labelColor,
+                size: 20,
+              ),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(12),
+                borderSide: BorderSide.none,
+              ),
+              enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(12),
+                borderSide: BorderSide.none,
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(12),
+                borderSide: BorderSide.none,
+              ),
+              errorBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(12),
+                borderSide: const BorderSide(color: Colors.redAccent, width: 1),
+              ),
+              focusedErrorBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(12),
+                borderSide: const BorderSide(color: Colors.redAccent, width: 1),
+              ),
+              contentPadding: const EdgeInsets.symmetric(
+                horizontal: 16,
+                vertical: 16,
+              ),
+            ),
+          ),
+          const SizedBox(height: 16),
+
+          // Description Field
+          const Padding(
+            padding: EdgeInsets.only(left: 4, bottom: 6),
+            child: Text(
+              'Description',
+              style: TextStyle(
+                fontSize: 12,
+                fontWeight: FontWeight.w600,
+                color: labelColor,
+                letterSpacing: 0.5,
+              ),
+            ),
+          ),
+          TextFormField(
+            controller: _descriptionController,
+            maxLines: 3,
+            validator: (value) {
+              if (value == null || value.trim().isEmpty) {
+                return 'Please enter a task description';
+              }
+              return null;
+            },
+            style: const TextStyle(fontSize: 15, color: textColor),
+            decoration: InputDecoration(
+              filled: true,
+              fillColor: inputBgColor,
+              hintText: 'Enter task description',
+              hintStyle: TextStyle(fontSize: 15, color: Colors.grey.shade400),
+              prefixIcon: const Padding(
+                padding: EdgeInsets.only(bottom: 40),
+                child: Icon(
+                  Icons.notes_rounded,
+                  color: labelColor,
+                  size: 20,
+                ),
+              ),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(12),
+                borderSide: BorderSide.none,
+              ),
+              enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(12),
+                borderSide: BorderSide.none,
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(12),
+                borderSide: BorderSide.none,
+              ),
+              errorBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(12),
+                borderSide: const BorderSide(color: Colors.redAccent, width: 1),
+              ),
+              focusedErrorBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(12),
+                borderSide: const BorderSide(color: Colors.redAccent, width: 1),
+              ),
+              contentPadding: const EdgeInsets.symmetric(
+                horizontal: 16,
+                vertical: 16,
+              ),
+            ),
+          ),
+          const SizedBox(height: 16),
+
+          // Priority & Status Dropdowns
+          Row(
+            children: [
+              Expanded(
+                child: TaskPriorityDropdown(
+                  value: _priority,
+                  onChanged: (val) {
+                    if (val != null) setState(() => _priority = val);
+                  },
+                ),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: TaskStatusDropdown(
+                  value: _status,
+                  onChanged: (val) {
+                    if (val != null) setState(() => _status = val);
+                  },
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 16),
+
+          // Due Date Picker
+          DueDatePickerField(
+            selectedDate: _dueDate,
+            onDateSelected: (date) {
+              setState(() => _dueDate = date);
+            },
+          ),
+          const SizedBox(height: 32),
+
+          // Save & Cancel Buttons
+          SaveTaskButton(
+            isLoading: widget.isLoading,
+            onPressed: _onSavePressed,
+          ),
+          const SizedBox(height: 12),
+          TextButton(
+            onPressed: widget.isLoading ? null : widget.onCancel,
+            style: TextButton.styleFrom(
+              padding: const EdgeInsets.symmetric(vertical: 14),
+            ),
+            child: Text(
+              'Cancel',
+              style: TextStyle(
+                fontSize: 15,
+                fontWeight: FontWeight.w600,
+                color: Colors.grey.shade700,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
