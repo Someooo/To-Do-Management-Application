@@ -4,8 +4,6 @@ import 'dart:io';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/foundation.dart';
 
-import '../utils/toast_utils.dart';
-
 class NetworkService {
   NetworkService() {
     _initConnectivity();
@@ -86,11 +84,5 @@ class NetworkService {
     if (isConnectedNotifier.value == newStatus) return;
 
     isConnectedNotifier.value = newStatus;
-
-    if (!newStatus) {
-      ToastUtils.showNoInternetSnackbar();
-    } else {
-      ToastUtils.showInternetRestoredSnackbar();
-    }
   }
 }

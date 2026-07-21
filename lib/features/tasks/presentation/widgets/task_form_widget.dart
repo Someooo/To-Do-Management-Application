@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:my_template/core/utils/app_snack_bar.dart';
 import '../../domain/entities/task_entity.dart';
 import 'due_date_picker_field.dart';
 import 'save_task_button.dart';
@@ -44,13 +45,27 @@ class _TaskFormWidgetState extends State<TaskFormWidget> {
       _status = widget.initialTask!.status;
       _dueDate = widget.initialTask!.dueDate;
     }
+    _titleController.addListener(_onTitleChanged);
   }
 
   @override
   void dispose() {
+    _titleController.removeListener(_onTitleChanged);
     _titleController.dispose();
     _descriptionController.dispose();
     super.dispose();
+  }
+
+  void _onTitleChanged() {
+    final text = _titleController.text;
+    if (text.length > 100) {
+      AppSnackBar.showError(context, 'Title cannot exceed 100 characters.');
+      _titleController.value = TextEditingValue(
+        text: text.substring(0, 100),
+        selection: const TextSelection.collapsed(offset: 100),
+      );
+    }
+    setState(() {});
   }
 
   void _onSavePressed() {
@@ -101,10 +116,19 @@ class _TaskFormWidgetState extends State<TaskFormWidget> {
               if (value == null || value.trim().isEmpty) {
                 return 'Please enter a task title';
               }
+              if (value.length > 100) {
+                return 'Title cannot exceed 100 characters';
+              }
               return null;
             },
             style: const TextStyle(fontSize: 15, color: textColor),
             decoration: InputDecoration(
+              counterText: '${_titleController.text.length}/100',
+              counterStyle: const TextStyle(
+                fontSize: 11,
+                color: Color(0xFF6B7280),
+                fontWeight: FontWeight.w500,
+              ),
               filled: true,
               fillColor: inputBgColor,
               hintText: 'Enter task title',
