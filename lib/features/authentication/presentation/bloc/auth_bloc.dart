@@ -1,4 +1,3 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../domain/usecases/forgot_password_usecase.dart';
 import '../../domain/usecases/get_current_user_usecase.dart';
@@ -45,14 +44,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         password: event.password,
       );
       emit(AuthAuthenticated(user: user));
-    } on FirebaseAuthException catch (e) {
-      final errorMessage = _mapFirebaseAuthExceptionToMessage(
-        e,
-        'Login failed. Please try again.',
-      );
-      emit(AuthFailure(message: errorMessage));
-    } catch (_) {
-      emit(const AuthFailure(message: 'Login failed. Please try again.'));
+    } catch (e) {
+      emit(AuthFailure(message: e.toString()));
     }
   }
 
@@ -67,14 +60,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         password: event.password,
       );
       emit(AuthAuthenticated(user: user));
-    } on FirebaseAuthException catch (e) {
-      final errorMessage = _mapFirebaseAuthExceptionToMessage(
-        e,
-        'Registration failed. Please try again.',
-      );
-      emit(AuthFailure(message: errorMessage));
-    } catch (_) {
-      emit(const AuthFailure(message: 'Registration failed. Please try again.'));
+    } catch (e) {
+      emit(AuthFailure(message: e.toString()));
     }
   }
 
@@ -96,41 +83,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     try {
       await _forgotPasswordUseCase(email: event.email);
       emit(const AuthPasswordResetEmailSent());
-    } on FirebaseAuthException catch (e) {
-      final String errorMessage = _mapFirebaseAuthExceptionToMessage(
-        e,
-        'Failed to send the password reset email. Please try again.',
-      );
-      emit(AuthFailure(message: errorMessage));
-    } catch (_) {
-      emit(const AuthFailure(
-          message: 'Failed to send the password reset email. Please try again.'));
-    }
-  }
-
-  String _mapFirebaseAuthExceptionToMessage(
-    FirebaseAuthException e,
-    String defaultFallbackMessage,
-  ) {
-    switch (e.code) {
-      case 'wrong-password':
-        return 'Incorrect password. Please try again.';
-      case 'invalid-email':
-        return 'Please enter a valid email address.';
-      case 'user-not-found':
-        return 'No account was found with this email.';
-      case 'invalid-credential':
-        return 'Incorrect email or password.';
-      case 'email-already-in-use':
-        return 'An account with this email already exists.';
-      case 'weak-password':
-        return 'Password is too weak. Please choose a stronger password.';
-      case 'network-request-failed':
-        return 'Network error. Please check your internet connection.';
-      case 'too-many-requests':
-        return 'Too many attempts. Please try again later.';
-      default:
-        return defaultFallbackMessage;
+    } catch (e) {
+      emit(AuthFailure(message: e.toString()));
     }
   }
 

@@ -1,3 +1,5 @@
+import 'package:my_template/core/errors/exceptions.dart';
+import 'package:my_template/core/errors/failures.dart';
 import '../../domain/entities/user_entity.dart';
 import '../../domain/repositories/auth_repository.dart';
 import '../datasources/auth_remote_data_source.dart';
@@ -13,17 +15,21 @@ class AuthRepositoryImpl implements AuthRepository {
     required String email,
     required String password,
   }) async {
-    final credential = await remoteDataSource.loginWithEmailAndPassword(
-      email: email,
-      password: password,
-    );
+    try {
+      final credential = await remoteDataSource.loginWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
 
-    final firebaseUser = credential.user;
-    if (firebaseUser == null) {
-      throw Exception('Login failed: User object is null');
+      final firebaseUser = credential.user;
+      if (firebaseUser == null) {
+        throw const AuthFailure(message: 'Login failed: User object is null');
+      }
+
+      return UserModel.fromFirebaseUser(firebaseUser);
+    } catch (e) {
+      throw _mapExceptionToFailure(e);
     }
-
-    return UserModel.fromFirebaseUser(firebaseUser);
   }
 
   @override
@@ -31,37 +37,70 @@ class AuthRepositoryImpl implements AuthRepository {
     required String email,
     required String password,
   }) async {
-    final credential = await remoteDataSource.registerWithEmailAndPassword(
-      email: email,
-      password: password,
-    );
+    try {
+      final credential = await remoteDataSource.registerWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
 
-    final firebaseUser = credential.user;
-    if (firebaseUser == null) {
-      throw Exception('Registration failed: User object is null');
+      final firebaseUser = credential.user;
+      if (firebaseUser == null) {
+        throw const AuthFailure(message: 'Registration failed: User object is null');
+      }
+
+      return UserModel.fromFirebaseUser(firebaseUser);
+    } catch (e) {
+      throw _mapExceptionToFailure(e);
     }
-
-    return UserModel.fromFirebaseUser(firebaseUser);
   }
 
   @override
   Future<void> logout() async {
-    await remoteDataSource.logout();
+    try {
+      await remoteDataSource.logout();
+    } catch (e) {
+      throw _mapExceptionToFailure(e);
+    }
   }
 
   @override
   Future<void> sendPasswordResetEmail({
     required String email,
   }) async {
-    await remoteDataSource.sendPasswordResetEmail(email: email);
+    try {
+      await remoteDataSource.sendPasswordResetEmail(email: email);
+    } catch (e) {
+      throw _mapExceptionToFailure(e);
+    }
   }
 
   @override
   UserEntity? getCurrentUser() {
-    final firebaseUser = remoteDataSource.getCurrentUser();
-    if (firebaseUser == null) {
-      return null;
+    try {
+      final firebaseUser = remoteDataSource.getCurrentUser();
+      if (firebaseUser == null) {
+        return null;
+      }
+      return UserModel.fromFirebaseUser(firebaseUser);
+    } catch (e) {
+      throw _mapExceptionToFailure(e);
     }
-    return UserModel.fromFirebaseUser(firebaseUser);
+  }
+
+  Failure _mapExceptionToFailure(dynamic exception) {
+    if (exception is AuthException) {
+      if (exception.message.toLowerCase().contains('network') ||
+          exception.message.toLowerCase().contains('connection')) {
+        return NetworkFailure(message: exception.message, cause: exception);
+      }
+      return AuthFailure(message: exception.message, cause: exception);
+    } else if (exception is Failure) {
+      return exception;
+    } else {
+      return ServerFailure(
+        message: exception.toString(),
+        cause: exception,
+      );
+    }
   }
 }

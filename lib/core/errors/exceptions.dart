@@ -10,3 +10,14 @@ class CacheException implements Exception {
 
   final String? message;
 }
+
+class AuthException implements Exception {
+  final String message;
+  final String? code;
+  final Object? cause;
+
+  AuthException(this.message, {this.code, this.cause});
+
+  @override
+  String toString() => message;
+}
