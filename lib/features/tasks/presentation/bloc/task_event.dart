@@ -74,3 +74,13 @@ class TaskFilterChanged extends TaskEvent {
   List<Object?> get props => [statusFilter, priorityFilter];
 }
 
+class TaskSearchChanged extends TaskEvent {
+  final String searchQuery;
+
+  const TaskSearchChanged(this.searchQuery);
+
+  @override
+  List<Object?> get props => [searchQuery];
+}
+
+

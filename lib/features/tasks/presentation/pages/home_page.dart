@@ -17,6 +17,7 @@ import '../widgets/task_error_widget.dart';
 import '../widgets/task_filter_widget.dart';
 import '../widgets/task_list_widget.dart';
 import '../widgets/task_loading_widget.dart';
+import '../widgets/task_search_widget.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -76,6 +77,17 @@ class _HomePageContent extends StatelessWidget {
                         final taskCount =
                             state is TaskLoaded ? state.allTasks.length : 0;
                         return HomeHeaderWidget(taskCount: taskCount);
+                      },
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    child: TaskSearchWidget(
+                      onChanged: (newQuery) {
+                        context
+                            .read<TaskBloc>()
+                            .add(TaskSearchChanged(newQuery));
                       },
                     ),
                   ),

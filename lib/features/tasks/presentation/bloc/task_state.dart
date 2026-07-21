@@ -21,16 +21,24 @@ class TaskLoaded extends TaskState {
   final List<TaskEntity> allTasks;
   final TaskStatus? statusFilter;
   final TaskPriority? priorityFilter;
+  final String searchQuery;
 
   const TaskLoaded({
     required this.tasks,
     required this.allTasks,
     this.statusFilter,
     this.priorityFilter,
+    this.searchQuery = '',
   });
 
   @override
-  List<Object?> get props => [tasks, allTasks, statusFilter, priorityFilter];
+  List<Object?> get props => [
+        tasks,
+        allTasks,
+        statusFilter,
+        priorityFilter,
+        searchQuery,
+      ];
 }
 
 class TaskFailure extends TaskState {

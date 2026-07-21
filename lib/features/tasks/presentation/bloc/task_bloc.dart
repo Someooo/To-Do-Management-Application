@@ -18,6 +18,7 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
   List<TaskEntity> _latestAllTasks = [];
   TaskStatus? _currentStatusFilter;
   TaskPriority? _currentPriorityFilter;
+  String _currentSearchQuery = '';
 
   TaskBloc({
     required this.getTasksUseCase,
@@ -33,6 +34,7 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
     on<TasksUpdatedInternal>(_onTasksUpdatedInternal);
     on<TaskErrorInternal>(_onTaskErrorInternal);
     on<TaskFilterChanged>(_onTaskFilterChanged);
+    on<TaskSearchChanged>(_onTaskSearchChanged);
   }
 
   void _onTaskStarted(
@@ -63,12 +65,14 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
       _latestAllTasks,
       _currentStatusFilter,
       _currentPriorityFilter,
+      _currentSearchQuery,
     );
     emit(TaskLoaded(
       tasks: filtered,
       allTasks: _latestAllTasks,
       statusFilter: _currentStatusFilter,
       priorityFilter: _currentPriorityFilter,
+      searchQuery: _currentSearchQuery,
     ));
   }
 
@@ -82,12 +86,34 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
       _latestAllTasks,
       _currentStatusFilter,
       _currentPriorityFilter,
+      _currentSearchQuery,
     );
     emit(TaskLoaded(
       tasks: filtered,
       allTasks: _latestAllTasks,
       statusFilter: _currentStatusFilter,
       priorityFilter: _currentPriorityFilter,
+      searchQuery: _currentSearchQuery,
+    ));
+  }
+
+  void _onTaskSearchChanged(
+    TaskSearchChanged event,
+    Emitter<TaskState> emit,
+  ) {
+    _currentSearchQuery = event.searchQuery;
+    final filtered = _filterTasks(
+      _latestAllTasks,
+      _currentStatusFilter,
+      _currentPriorityFilter,
+      _currentSearchQuery,
+    );
+    emit(TaskLoaded(
+      tasks: filtered,
+      allTasks: _latestAllTasks,
+      statusFilter: _currentStatusFilter,
+      priorityFilter: _currentPriorityFilter,
+      searchQuery: _currentSearchQuery,
     ));
   }
 
@@ -95,13 +121,20 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
     List<TaskEntity> tasks,
     TaskStatus? statusFilter,
     TaskPriority? priorityFilter,
+    String searchQuery,
   ) {
+    final query = searchQuery.trim().toLowerCase();
+
     return tasks.where((task) {
       if (statusFilter != null && task.status != statusFilter) {
         return false;
       }
       if (priorityFilter != null && task.priority != priorityFilter) {
         return false;
+      }
+      if (query.isNotEmpty) {
+        final matchesTitle = task.title.toLowerCase().contains(query);
+        if (!matchesTitle) return false;
       }
       return true;
     }).toList();
