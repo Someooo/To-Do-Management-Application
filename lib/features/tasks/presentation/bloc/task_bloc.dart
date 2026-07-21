@@ -248,7 +248,12 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
     try {
       await addTaskUseCase(event.task);
     } catch (e) {
-      emit(TaskFailure(message: e.toString()));
+      if (state is TaskLoaded) {
+        emit((state as TaskLoaded).copyWith(message: e.toString()));
+        emit((state as TaskLoaded).copyWith(clearMessage: true));
+      } else {
+        emit(TaskFailure(message: e.toString()));
+      }
     }
   }
 
@@ -259,7 +264,12 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
     try {
       await updateTaskUseCase(event.task);
     } catch (e) {
-      emit(TaskFailure(message: e.toString()));
+      if (state is TaskLoaded) {
+        emit((state as TaskLoaded).copyWith(message: e.toString()));
+        emit((state as TaskLoaded).copyWith(clearMessage: true));
+      } else {
+        emit(TaskFailure(message: e.toString()));
+      }
     }
   }
 
@@ -270,7 +280,12 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
     try {
       await deleteTaskUseCase(event.id);
     } catch (e) {
-      emit(TaskFailure(message: e.toString()));
+      if (state is TaskLoaded) {
+        emit((state as TaskLoaded).copyWith(message: e.toString()));
+        emit((state as TaskLoaded).copyWith(clearMessage: true));
+      } else {
+        emit(TaskFailure(message: e.toString()));
+      }
     }
   }
 

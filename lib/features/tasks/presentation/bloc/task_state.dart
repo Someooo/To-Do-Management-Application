@@ -23,6 +23,7 @@ class TaskLoaded extends TaskState {
   final TaskPriority? priorityFilter;
   final String searchQuery;
   final TaskSortOption sortOption;
+  final String? message;
 
   const TaskLoaded({
     required this.tasks,
@@ -31,7 +32,29 @@ class TaskLoaded extends TaskState {
     this.priorityFilter,
     this.searchQuery = '',
     this.sortOption = TaskSortOption.none,
+    this.message,
   });
+
+  TaskLoaded copyWith({
+    List<TaskEntity>? tasks,
+    List<TaskEntity>? allTasks,
+    TaskStatus? statusFilter,
+    TaskPriority? priorityFilter,
+    String? searchQuery,
+    TaskSortOption? sortOption,
+    String? message,
+    bool clearMessage = false,
+  }) {
+    return TaskLoaded(
+      tasks: tasks ?? this.tasks,
+      allTasks: allTasks ?? this.allTasks,
+      statusFilter: statusFilter ?? this.statusFilter,
+      priorityFilter: priorityFilter ?? this.priorityFilter,
+      searchQuery: searchQuery ?? this.searchQuery,
+      sortOption: sortOption ?? this.sortOption,
+      message: clearMessage ? null : (message ?? this.message),
+    );
+  }
 
   @override
   List<Object?> get props => [
@@ -41,6 +64,7 @@ class TaskLoaded extends TaskState {
         priorityFilter,
         searchQuery,
         sortOption,
+        message,
       ];
 }
 
