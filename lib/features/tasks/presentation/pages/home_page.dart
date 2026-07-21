@@ -126,54 +126,69 @@ class _HomePageContent extends StatelessWidget {
                   ),
                   const SizedBox(height: 12),
                   Expanded(
-                    child: BlocBuilder<TaskBloc, TaskState>(
-                      builder: (context, state) {
-                        if (state is TaskInitial || state is TaskLoading) {
-                          return const TaskLoadingWidget();
-                        }
-
-                        if (state is TaskFailure) {
-                          return TaskErrorWidget(
-                            message: state.message,
-                            onRetry: () {
-                              context
-                                  .read<TaskBloc>()
-                                  .add(const TaskSubscriptionRequested());
-                            },
-                          );
-                        }
-
-                        if (state is TaskLoaded) {
-                          if (state.tasks.isEmpty) {
-                            return const EmptyTasksWidget();
+                    child: RefreshIndicator(
+                      color: const Color(0xFF3B82F6),
+                      backgroundColor: Colors.white,
+                      onRefresh: () async {
+                        context.read<TaskBloc>().add(const TaskRefreshed());
+                        await Future.delayed(const Duration(milliseconds: 800));
+                      },
+                      child: BlocBuilder<TaskBloc, TaskState>(
+                        builder: (context, state) {
+                          if (state is TaskInitial || state is TaskLoading) {
+                            return const TaskLoadingWidget();
                           }
-                          return TaskListWidget(
-                            tasks: state.tasks,
-                            onEditTask: (task) {
-                              Navigator.of(context).push(
-                                MaterialPageRoute(
-                                  builder: (_) => EditTaskPage(task: task),
-                                ),
-                              );
-                            },
-                            onDeleteTask: (task) async {
-                              final confirmed =
-                                  await DeleteTaskDialog.show(context);
-                              if (confirmed == true && context.mounted) {
+
+                          if (state is TaskFailure) {
+                            return TaskErrorWidget(
+                              message: state.message,
+                              onRetry: () {
                                 context
                                     .read<TaskBloc>()
-                                    .add(TaskDeleted(task.id));
-                                AppSnackBar.showSuccess(
-                                  context,
-                                  'Task deleted successfully.',
-                                );
-                              }
-                            },
-                          );
-                        }
+                                    .add(const TaskSubscriptionRequested());
+                              },
+                            );
+                          }
 
-                        return const TaskLoadingWidget();
-                      },
+                          if (state is TaskLoaded) {
+                            if (state.tasks.isEmpty) {
+                              return const CustomScrollView(
+                                physics: AlwaysScrollableScrollPhysics(),
+                                slivers: [
+                                  SliverFillRemaining(
+                                    child: EmptyTasksWidget(),
+                                  ),
+                                ],
+                              );
+                            }
+                            return TaskListWidget(
+                              tasks: state.tasks,
+                              onEditTask: (task) {
+                                Navigator.of(context).push(
+                                  MaterialPageRoute(
+                                    builder: (_) => EditTaskPage(task: task),
+                                  ),
+                                );
+                              },
+                              onDeleteTask: (task) async {
+                                final confirmed =
+                                    await DeleteTaskDialog.show(context);
+                                if (confirmed == true && context.mounted) {
+                                  context
+                                      .read<TaskBloc>()
+                                      .add(TaskDeleted(task.id));
+                                  AppSnackBar.showSuccess(
+                                    context,
+                                    'Task deleted successfully.',
+                                  );
+                                }
+                              },
+                            );
+                          }
+
+                          return const TaskLoadingWidget();
+                        },
+                      ),
                     ),
                   ),
                 ],

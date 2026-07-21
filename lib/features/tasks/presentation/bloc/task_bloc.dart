@@ -35,6 +35,18 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
     on<TaskErrorInternal>(_onTaskErrorInternal);
     on<TaskFilterChanged>(_onTaskFilterChanged);
     on<TaskSearchChanged>(_onTaskSearchChanged);
+    on<TaskRefreshed>(_onTaskRefreshed);
+  }
+
+  Future<void> _onTaskRefreshed(
+    TaskRefreshed event,
+    Emitter<TaskState> emit,
+  ) async {
+    await _tasksSubscription?.cancel();
+    _tasksSubscription = getTasksUseCase().listen(
+      (tasks) => add(TasksUpdatedInternal(tasks)),
+      onError: (error) => add(TaskErrorInternal(error.toString())),
+    );
   }
 
   void _onTaskStarted(

@@ -83,4 +83,8 @@ class TaskSearchChanged extends TaskEvent {
   List<Object?> get props => [searchQuery];
 }
 
+class TaskRefreshed extends TaskEvent {
+  const TaskRefreshed();
+}
+
 
