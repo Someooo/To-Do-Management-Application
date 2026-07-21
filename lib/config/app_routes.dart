@@ -14,6 +14,8 @@ class AppRoutes {
 
   static const String addTask = '/tasks/add';
 
+  static const String editTask = '/tasks/edit';
+
   static const String login = '/auth/login';
 
   static const String register = '/auth/register';

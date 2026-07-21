@@ -43,15 +43,12 @@ class _ForgotPasswordPageContentState
   }
 
   void _onSendResetLinkPressed() {
-    debugPrint('📱 [ForgotPasswordPage] Send Reset Link button pressed');
     if (!(_formKey.currentState?.validate() ?? false)) {
-      debugPrint('⚠️ [ForgotPasswordPage] Validation failed');
       return;
     }
 
     final email = _emailController.text.trim();
 
-    debugPrint('📱 [ForgotPasswordPage] Validation passed for email: $email');
     context.read<AuthBloc>().add(
           AuthForgotPasswordRequested(email: email),
         );
@@ -81,18 +78,12 @@ class _ForgotPasswordPageContentState
       body: SafeArea(
         child: BlocConsumer<AuthBloc, AuthState>(
           listener: (context, state) {
-            if (state is AuthLoading) {
-              debugPrint('📱 [ForgotPasswordPage] State received: AuthLoading');
-            } else if (state is AuthPasswordResetEmailSent) {
-              debugPrint(
-                  '📱 [ForgotPasswordPage] State received: AuthPasswordResetEmailSent');
+            if (state is AuthPasswordResetEmailSent) {
               AppSnackBar.showSuccess(
                 context,
                 "Password reset email has been sent successfully. If you don't see it in your inbox, please check your Spam/Junk folder.",
               );
             } else if (state is AuthFailure) {
-              debugPrint(
-                  '📱 [ForgotPasswordPage] State received: AuthFailure (Message: ${state.message})');
               AppSnackBar.showError(context, state.message);
             }
           },

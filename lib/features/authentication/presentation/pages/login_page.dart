@@ -46,16 +46,13 @@ class _LoginPageContentState extends State<_LoginPageContent> {
   }
 
   void _onLoginPressed() {
-    debugPrint('📱 [LoginPage] Login button pressed');
     if (!(_formKey.currentState?.validate() ?? false)) {
-      debugPrint('⚠️ [LoginPage] Validation failed');
       return;
     }
 
     final email = _emailController.text.trim();
     final password = _passwordController.text.trim();
 
-    debugPrint('📱 [LoginPage] Validation passed for email: $email');
     context.read<AuthBloc>().add(
           AuthLoginRequested(
             email: email,
@@ -73,17 +70,10 @@ class _LoginPageContentState extends State<_LoginPageContent> {
       body: SafeArea(
         child: BlocConsumer<AuthBloc, AuthState>(
           listener: (context, state) {
-            if (state is AuthLoading) {
-              debugPrint('📱 [LoginPage] State received: AuthLoading');
-            } else if (state is AuthAuthenticated) {
-              debugPrint(
-                  '📱 [LoginPage] State received: AuthAuthenticated (User ID: ${state.user.id})');
+            if (state is AuthAuthenticated) {
               AppSnackBar.showSuccess(context, 'Login successful.');
-              debugPrint('📱 [LoginPage] Navigating to catalog screen...');
               Navigator.of(context).pushReplacementNamed(AppRoutes.catalog);
             } else if (state is AuthFailure) {
-              debugPrint(
-                  '📱 [LoginPage] State received: AuthFailure (Message: ${state.message})');
               AppSnackBar.showError(context, state.message);
             }
           },

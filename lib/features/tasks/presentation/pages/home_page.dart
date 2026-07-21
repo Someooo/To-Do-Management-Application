@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:my_template/config/app_routes.dart';
+import 'package:my_template/core/utils/app_snack_bar.dart';
 import 'package:my_template/di.dart';
 import '../../../authentication/presentation/bloc/auth_bloc.dart';
 import '../../../authentication/presentation/bloc/auth_event.dart';
@@ -8,6 +9,8 @@ import '../../../authentication/presentation/bloc/auth_state.dart';
 import '../bloc/task_bloc.dart';
 import '../bloc/task_event.dart';
 import '../bloc/task_state.dart';
+import 'edit_task_page.dart';
+import '../widgets/delete_task_dialog.dart';
 import '../widgets/empty_tasks_widget.dart';
 import '../widgets/task_error_widget.dart';
 import '../widgets/task_list_widget.dart';
@@ -42,7 +45,6 @@ class _HomePageContent extends StatelessWidget {
     return BlocListener<AuthBloc, AuthState>(
       listener: (context, state) {
         if (state is AuthUnauthenticated) {
-          debugPrint('📱 [HomePage] User logged out. Navigating to login...');
           Navigator.of(context).pushReplacementNamed(AppRoutes.login);
         }
       },
@@ -65,7 +67,6 @@ class _HomePageContent extends StatelessWidget {
               icon: const Icon(Icons.logout_rounded, color: Color(0xFF1A1C1F)),
               tooltip: 'Logout',
               onPressed: () {
-                debugPrint('📱 [HomePage] Logout button pressed');
                 context.read<AuthBloc>().add(const AuthLogoutRequested());
               },
             ),
@@ -94,7 +95,26 @@ class _HomePageContent extends StatelessWidget {
                 if (state.tasks.isEmpty) {
                   return const EmptyTasksWidget();
                 }
-                return TaskListWidget(tasks: state.tasks);
+                return TaskListWidget(
+                  tasks: state.tasks,
+                  onEditTask: (task) {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (_) => EditTaskPage(task: task),
+                      ),
+                    );
+                  },
+                  onDeleteTask: (task) async {
+                    final confirmed = await DeleteTaskDialog.show(context);
+                    if (confirmed == true && context.mounted) {
+                      context.read<TaskBloc>().add(TaskDeleted(task.id));
+                      AppSnackBar.showSuccess(
+                        context,
+                        'Task deleted successfully.',
+                      );
+                    }
+                  },
+                );
               }
 
               return const TaskLoadingWidget();

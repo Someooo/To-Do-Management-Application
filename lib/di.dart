@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get_it/get_it.dart';
 import 'package:my_template/core/services/api_service.dart';
 import 'package:my_template/core/services/network_service.dart';
@@ -51,7 +52,10 @@ Future<void> configureDependencies() async {
 
   // Task Feature
   getIt.registerLazySingleton<TaskRemoteDataSource>(
-      () => TaskRemoteDataSourceImpl(firestore: FirebaseFirestore.instance));
+      () => TaskRemoteDataSourceImpl(
+            firestore: FirebaseFirestore.instance,
+            auth: FirebaseAuth.instance,
+          ));
   getIt.registerLazySingleton<TaskRepository>(
       () => TaskRepositoryImpl(remoteDataSource: getIt()));
 

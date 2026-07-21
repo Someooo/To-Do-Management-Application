@@ -13,7 +13,6 @@ class TaskModel extends TaskEntity {
     super.updatedAt,
   });
 
-  /// Factory constructor to create a TaskModel from a TaskEntity.
   factory TaskModel.fromEntity(TaskEntity entity) {
     if (entity is TaskModel) return entity;
     return TaskModel(
@@ -28,13 +27,11 @@ class TaskModel extends TaskEntity {
     );
   }
 
-  /// Factory constructor to create a TaskModel from a Firestore DocumentSnapshot.
   factory TaskModel.fromFirestore(DocumentSnapshot<Map<String, dynamic>> doc) {
     final data = doc.data() ?? {};
     return TaskModel.fromMap(data, doc.id);
   }
 
-  /// Factory constructor to create a TaskModel from a Map and ID.
   factory TaskModel.fromMap(Map<String, dynamic> map, String id) {
     return TaskModel(
       id: id,
@@ -48,7 +45,6 @@ class TaskModel extends TaskEntity {
     );
   }
 
-  /// Converts TaskModel to a Map suitable for Firestore storage.
   Map<String, dynamic> toFirestore() {
     return {
       'title': title,
@@ -61,7 +57,6 @@ class TaskModel extends TaskEntity {
     };
   }
 
-  /// Factory constructor to create a TaskModel from a JSON Map.
   factory TaskModel.fromJson(Map<String, dynamic> json) {
     return TaskModel(
       id: json['id'] as String? ?? '',
@@ -75,7 +70,6 @@ class TaskModel extends TaskEntity {
     );
   }
 
-  /// Converts TaskModel to a standard JSON Map.
   Map<String, dynamic> toJson() {
     return {
       'id': id,
@@ -89,7 +83,6 @@ class TaskModel extends TaskEntity {
     };
   }
 
-  /// Helper method to safely convert dynamic values (Timestamp, String, DateTime) to DateTime.
   static DateTime? _parseDateTime(dynamic value) {
     if (value == null) return null;
     if (value is Timestamp) return value.toDate();

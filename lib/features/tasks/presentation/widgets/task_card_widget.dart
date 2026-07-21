@@ -4,10 +4,14 @@ import '../../domain/entities/task_entity.dart';
 
 class TaskCardWidget extends StatelessWidget {
   final TaskEntity task;
+  final VoidCallback? onEdit;
+  final VoidCallback? onDelete;
 
   const TaskCardWidget({
     super.key,
     required this.task,
+    this.onEdit,
+    this.onDelete,
   });
 
   @override
@@ -17,11 +21,11 @@ class TaskCardWidget extends StatelessWidget {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(16),
-        boxShadow: [
+        boxShadow: const [
           BoxShadow(
-            color: const Color(0x0A000000),
+            color: Color(0x0A000000),
             blurRadius: 10,
-            offset: const Offset(0, 4),
+            offset: Offset(0, 4),
           ),
         ],
       ),
@@ -45,6 +49,36 @@ class TaskCardWidget extends StatelessWidget {
                 ),
                 const SizedBox(width: 8),
                 _buildPriorityBadge(task.priority),
+                if (onEdit != null) ...[
+                  const SizedBox(width: 6),
+                  InkWell(
+                    onTap: onEdit,
+                    borderRadius: BorderRadius.circular(6),
+                    child: const Padding(
+                      padding: EdgeInsets.all(2),
+                      child: Icon(
+                        Icons.edit_outlined,
+                        size: 18,
+                        color: Color(0xFF0060A9),
+                      ),
+                    ),
+                  ),
+                ],
+                if (onDelete != null) ...[
+                  const SizedBox(width: 6),
+                  InkWell(
+                    onTap: onDelete,
+                    borderRadius: BorderRadius.circular(6),
+                    child: Padding(
+                      padding: const EdgeInsets.all(2),
+                      child: Icon(
+                        Icons.delete_outline_rounded,
+                        size: 18,
+                        color: Colors.red.shade600,
+                      ),
+                    ),
+                  ),
+                ],
               ],
             ),
             if (task.description.isNotEmpty) ...[

@@ -4,10 +4,14 @@ import 'task_card_widget.dart';
 
 class TaskListWidget extends StatelessWidget {
   final List<TaskEntity> tasks;
+  final ValueChanged<TaskEntity>? onEditTask;
+  final ValueChanged<TaskEntity>? onDeleteTask;
 
   const TaskListWidget({
     super.key,
     required this.tasks,
+    this.onEditTask,
+    this.onDeleteTask,
   });
 
   @override
@@ -17,7 +21,11 @@ class TaskListWidget extends StatelessWidget {
       itemCount: tasks.length,
       itemBuilder: (context, index) {
         final task = tasks[index];
-        return TaskCardWidget(task: task);
+        return TaskCardWidget(
+          task: task,
+          onEdit: onEditTask != null ? () => onEditTask!(task) : null,
+          onDelete: onDeleteTask != null ? () => onDeleteTask!(task) : null,
+        );
       },
     );
   }

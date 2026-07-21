@@ -86,7 +86,6 @@ class _SplashPageContentState extends State<_SplashPageContent>
   void _tryNavigate() {
     if (mounted && !_hasNavigated && _isSplashTimerDone && _targetRoute != null) {
       _hasNavigated = true;
-      debugPrint('📱 [SplashPage] Navigating to target route: $_targetRoute');
       Navigator.of(context).pushReplacementNamed(_targetRoute!);
     }
   }
@@ -99,10 +98,8 @@ class _SplashPageContentState extends State<_SplashPageContent>
         child: BlocListener<AuthBloc, AuthState>(
           listener: (context, state) {
             if (state is AuthAuthenticated) {
-              debugPrint('📱 [SplashPage] User authenticated (ID: ${state.user.id})');
               _targetRoute = AppRoutes.catalog;
             } else if (state is AuthUnauthenticated || state is AuthFailure) {
-              debugPrint('📱 [SplashPage] User unauthenticated');
               _targetRoute = AppRoutes.login;
             }
             _tryNavigate();
@@ -243,7 +240,6 @@ class _CatalogPlaceholderPageContent extends StatelessWidget {
     return BlocListener<AuthBloc, AuthState>(
       listener: (context, state) {
         if (state is AuthUnauthenticated) {
-          debugPrint('📱 [CatalogPage] Navigating to Login after logout');
           Navigator.of(context).pushReplacementNamed(AppRoutes.login);
         }
       },
@@ -255,7 +251,6 @@ class _CatalogPlaceholderPageContent extends StatelessWidget {
               icon: const Icon(Icons.logout_rounded),
               tooltip: 'Logout',
               onPressed: () {
-                debugPrint('📱 [CatalogPage] Logout button pressed');
                 context.read<AuthBloc>().add(const AuthLogoutRequested());
               },
             ),

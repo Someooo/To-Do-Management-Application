@@ -1,73 +1,135 @@
-# Catalog Browser
+# TaskFlow - To-Do & Task Management Application
 
-A Flutter application that displays a searchable catalog of 2,000 mock products with category filtering, favorite management, and a live summary. The project was built as a take-home assignment with a strong focus on Clean Architecture, rendering efficiency, and smooth performance.
-
----
-
-## Project Overview
-
-The application loads an in-memory dataset of 2,000 products, each containing an ID, name, category, price, and placeholder image. Users can browse the catalog, search products by name, filter by category, mark products as favorites, and view a persistent summary showing the number of favorite items and their total price.
-
-No backend or API is used, as required by the assignment.
+**TaskFlow** is a production-grade Flutter application for task and to-do management built with **Clean Architecture**, **BLoC State Management**, **Firebase Authentication**, and **Cloud Firestore** user-isolated real-time synchronization.
 
 ---
 
-## Approach
+## Features
 
-The project follows **Clean Architecture**, separating the application into three layers:
-
-* **Domain:** Business entities and repository contracts.
-* **Data:** In-memory data source and repository implementation.
-* **Presentation:** GetX controller, screens, and reusable widgets.
-
-**GetX** was selected because it is lightweight, fast, and well-suited for a feature of this size. It provides simple reactive state management with minimal boilerplate, making it easy to keep business logic separate from the UI while ensuring efficient widget updates. This allowed the application to update only the affected widgets (such as a single favorite button or the summary card) without rebuilding the entire product list, helping maintain smooth scrolling and responsive interactions.
-
----
-
-## Performance Decisions
-
-Performance was the primary focus during implementation.
-
-The following techniques were used:
-
-* `GridView.builder` for lazy rendering of products.
-* 300ms debounced search to prevent unnecessary filtering while typing.
-* Efficient filtering over an in-memory dataset.
-* Per-item reactive updates so toggling a favorite rebuilds only the affected product card instead of the entire list.
-* Cached network images with placeholders.
-* Use of `const` widgets where applicable to reduce unnecessary rebuilds.
-* Preservation of scroll position during favorite updates.
+- 🔑 **Firebase Authentication**: Email and password login, user registration with validation, and password reset email flow.
+- 🔒 **User Data Isolation**: Tasks are stored securely in Firestore under `users/{uid}/tasks/{taskId}`, protected by production-level Firestore Security Rules.
+- 📋 **Task CRUD Operations**:
+  - **Create Task**: Add new tasks with title, description, priority (`Low`, `Medium`, `High`), status (`To Do`, `In Progress`, `Completed`), and due date picker.
+  - **Read / Realtime Sync**: Live streaming list updates automatically as tasks are created, updated, or deleted.
+  - **Edit Task**: Reusable form pre-filled with existing task data. Preserves creation timestamp and updates modification timestamp.
+  - **Delete Task**: Safe task deletion with Material 3 modal confirmation dialog.
+- 🎨 **Material 3 Design**: Vibrant color system, custom typography, responsive feedback, and consistent design language.
 
 ---
 
-## Trade-offs
+## Clean Architecture Overview
 
-Since the assignment explicitly requested an in-memory dataset, products are generated locally instead of using Firebase or a REST API. The repository abstraction was maintained so the local data source can easily be replaced with a remote implementation in the future without affecting the presentation layer.
+The project is structured following strict **Clean Architecture** principles into three primary layers:
 
-Category filtering was added as a small enhancement to complement the provided UI design while preserving the required search functionality.
+```text
+lib/
+├── config/                  # App constants & routing
+├── core/                    # Utilities, validation, theme, global widgets
+├── di.dart                  # Service locator configuration (GetIt)
+└── features/
+    ├── authentication/      # Auth Feature (Data, Domain, Presentation)
+    └── tasks/               # Tasks Feature
+        ├── data/
+        │   ├── datasources/ # TaskRemoteDataSource & Firestore integration
+        │   ├── models/      # TaskModel & Firestore serialization
+        │   └── repositories/# TaskRepositoryImpl implementation
+        ├── domain/
+        │   ├── entities/    # Pure TaskEntity & priority/status enums
+        │   ├── repositories/# Abstract TaskRepository contract
+        │   └── usecases/    # GetTasks, AddTask, UpdateTask, DeleteTask Use Cases
+        └── presentation/
+            ├── bloc/        # TaskBloc, TaskEvent, TaskState
+            ├── pages/       # HomePage, AddTaskPage, EditTaskPage
+            └── widgets/     # Modular form, list, card, & dialog widgets
+```
+
+### Data Flow
+```text
+UI (Pages & Widgets)
+       ↓
+   TaskBloc
+       ↓
+   Use Cases (GetTasks, AddTask, UpdateTask, DeleteTask)
+       ↓
+  TaskRepository (Domain Contract)
+       ↓
+TaskRepositoryImpl (Data Implementation)
+       ↓
+TaskRemoteDataSource (Firestore Data Source)
+       ↓
+ Cloud Firestore / Firebase Auth
+```
 
 ---
 
-## Performance Verification
+## Tech Stack & Dependencies
 
-Performance was verified using:
-
-* `flutter analyze` to ensure a clean codebase.
-* Manual testing with 2,000 products.
-* Rapid typing tests to verify smooth debounced search.
-* Continuous scrolling to ensure no noticeable jank.
-* Favorite toggling while scrolling to verify instant updates and preserved scroll position.
-
----
-
-## Assumptions
-
-* Products are generated locally because no backend or API was provided.
-* Placeholder network images are used for demonstration purposes.
-* Category filtering was added to improve the browsing experience while maintaining all assignment requirements.
+- **Framework**: Flutter (Dart)
+- **Design System**: Material 3
+- **State Management**: `flutter_bloc: ^8.1.3`
+- **Dependency Injection**: `get_it: ^8.0.3`
+- **Backend & Auth**: `firebase_core`, `firebase_auth`, `cloud_firestore`
+- **Utility**: `intl`, `equatable`
 
 ---
 
-## AI Usage
+## Firestore Data Structure & Security Rules
 
-AI tools (Google Gemini and Antigravity IDE) were used to help scaffold parts of the feature, generate initial widget layouts, and review architecture and performance decisions. All AI-generated code was manually reviewed, adapted to the project's architecture, and validated through `flutter analyze` and manual testing before submission.
+### Data Structure
+```text
+users
+ └── {uid}
+      └── tasks
+           └── {taskId}
+                ├── id: String
+                ├── title: String
+                ├── description: String
+                ├── priority: String ("low" | "medium" | "high")
+                ├── status: String ("todo" | "inProgress" | "completed")
+                ├── dueDate: Timestamp?
+                ├── createdAt: Timestamp
+                └── updatedAt: Timestamp
+```
+
+### Security Rules (`firestore.rules`)
+```javascript
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    match /users/{userId}/tasks/{taskId} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+    }
+  }
+}
+```
+
+---
+
+## Getting Started
+
+### Prerequisites
+- Flutter SDK (latest stable version)
+- Android Studio / VS Code
+- Firebase Project configured for Android (`google-services.json`) & iOS (`GoogleService-Info.plist`)
+
+### Local Setup & Execution
+1. Clone the repository and navigate to the project directory:
+   ```bash
+   cd "To-Do Management Application"
+   ```
+2. Install dependencies:
+   ```bash
+   flutter pub get
+   ```
+3. Verify static analysis:
+   ```bash
+   flutter analyze
+   ```
+4. Run the application:
+   ```bash
+   flutter run
+   ```

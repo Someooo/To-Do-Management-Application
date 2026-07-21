@@ -9,12 +9,16 @@ class TaskFormWidget extends StatefulWidget {
   final ValueChanged<TaskEntity> onSubmit;
   final VoidCallback onCancel;
   final bool isLoading;
+  final TaskEntity? initialTask;
+  final String submitButtonLabel;
 
   const TaskFormWidget({
     super.key,
     required this.onSubmit,
     required this.onCancel,
     this.isLoading = false,
+    this.initialTask,
+    this.submitButtonLabel = 'Create Task',
   });
 
   @override
@@ -23,12 +27,24 @@ class TaskFormWidget extends StatefulWidget {
 
 class _TaskFormWidgetState extends State<TaskFormWidget> {
   final _formKey = GlobalKey<FormState>();
-  final _titleController = TextEditingController();
-  final _descriptionController = TextEditingController();
+  late final TextEditingController _titleController;
+  late final TextEditingController _descriptionController;
 
   TaskPriority _priority = TaskPriority.medium;
   TaskStatus _status = TaskStatus.todo;
   DateTime? _dueDate;
+
+  @override
+  void initState() {
+    super.initState();
+    _titleController = TextEditingController(text: widget.initialTask?.title ?? '');
+    _descriptionController = TextEditingController(text: widget.initialTask?.description ?? '');
+    if (widget.initialTask != null) {
+      _priority = widget.initialTask!.priority;
+      _status = widget.initialTask!.status;
+      _dueDate = widget.initialTask!.dueDate;
+    }
+  }
 
   @override
   void dispose() {
@@ -43,13 +59,13 @@ class _TaskFormWidgetState extends State<TaskFormWidget> {
     }
 
     final task = TaskEntity(
-      id: '',
+      id: widget.initialTask?.id ?? '',
       title: _titleController.text.trim(),
       description: _descriptionController.text.trim(),
       priority: _priority,
       status: _status,
       dueDate: _dueDate,
-      createdAt: DateTime.now(),
+      createdAt: widget.initialTask?.createdAt ?? DateTime.now(),
       updatedAt: DateTime.now(),
     );
 
@@ -67,7 +83,6 @@ class _TaskFormWidgetState extends State<TaskFormWidget> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          // Title Field
           const Padding(
             padding: EdgeInsets.only(left: 4, bottom: 6),
             child: Text(
@@ -127,7 +142,6 @@ class _TaskFormWidgetState extends State<TaskFormWidget> {
           ),
           const SizedBox(height: 16),
 
-          // Description Field
           const Padding(
             padding: EdgeInsets.only(left: 4, bottom: 6),
             child: Text(
@@ -191,7 +205,6 @@ class _TaskFormWidgetState extends State<TaskFormWidget> {
           ),
           const SizedBox(height: 16),
 
-          // Priority & Status Dropdowns
           Row(
             children: [
               Expanded(
@@ -215,7 +228,6 @@ class _TaskFormWidgetState extends State<TaskFormWidget> {
           ),
           const SizedBox(height: 16),
 
-          // Due Date Picker
           DueDatePickerField(
             selectedDate: _dueDate,
             onDateSelected: (date) {
@@ -224,8 +236,8 @@ class _TaskFormWidgetState extends State<TaskFormWidget> {
           ),
           const SizedBox(height: 32),
 
-          // Save & Cancel Buttons
           SaveTaskButton(
+            label: widget.submitButtonLabel,
             isLoading: widget.isLoading,
             onPressed: _onSavePressed,
           ),

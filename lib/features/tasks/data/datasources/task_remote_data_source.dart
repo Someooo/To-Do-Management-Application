@@ -1,27 +1,35 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import '../models/task_model.dart';
 
 abstract class TaskRemoteDataSource {
-  /// Streams all tasks from the 'tasks' collection in Firestore.
   Stream<List<TaskModel>> getTasks();
-
-  /// Adds a new task document to Firestore.
   Future<void> addTask(TaskModel task);
-
-  /// Updates an existing task document in Firestore.
   Future<void> updateTask(TaskModel task);
-
-  /// Deletes a task document by ID from Firestore.
   Future<void> deleteTask(String id);
 }
 
 class TaskRemoteDataSourceImpl implements TaskRemoteDataSource {
   final FirebaseFirestore firestore;
+  final FirebaseAuth auth;
 
-  TaskRemoteDataSourceImpl({required this.firestore});
+  TaskRemoteDataSourceImpl({
+    required this.firestore,
+    required this.auth,
+  });
+
+  String get _currentUserId {
+    final uid = auth.currentUser?.uid;
+    if (uid == null || uid.isEmpty) {
+      throw Exception(
+        'User is not authenticated. Unable to perform task operations.',
+      );
+    }
+    return uid;
+  }
 
   CollectionReference<Map<String, dynamic>> get _tasksCollection =>
-      firestore.collection('tasks');
+      firestore.collection('users').doc(_currentUserId).collection('tasks');
 
   @override
   Stream<List<TaskModel>> getTasks() {

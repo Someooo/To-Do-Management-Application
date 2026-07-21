@@ -1,5 +1,4 @@
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../domain/usecases/forgot_password_usecase.dart';
 import '../../domain/usecases/get_current_user_usecase.dart';
@@ -39,27 +38,20 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     AuthLoginRequested event,
     Emitter<AuthState> emit,
   ) async {
-    debugPrint('🔒 [AuthBloc] LOGIN REQUESTED for email: ${event.email}');
     emit(const AuthLoading());
     try {
-      debugPrint('🔒 [AuthBloc] Calling LoginUseCase...');
       final user = await _loginUseCase(
         email: event.email,
         password: event.password,
       );
-      debugPrint(
-          '✅ [AuthBloc] LOGIN SUCCESS -> User ID: ${user.id}, Email: ${user.email}');
       emit(AuthAuthenticated(user: user));
     } on FirebaseAuthException catch (e) {
-      debugPrint('❌ [AuthBloc] LOGIN FAILED -> FirebaseAuthException: ${e.code}');
       final errorMessage = _mapFirebaseAuthExceptionToMessage(
         e,
         'Login failed. Please try again.',
       );
       emit(AuthFailure(message: errorMessage));
-    } catch (e, stackTrace) {
-      debugPrint('❌ [AuthBloc] LOGIN FAILED -> Error: $e');
-      debugPrint('❌ [AuthBloc] StackTrace:\n$stackTrace');
+    } catch (_) {
       emit(const AuthFailure(message: 'Login failed. Please try again.'));
     }
   }
@@ -68,27 +60,20 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     AuthRegisterRequested event,
     Emitter<AuthState> emit,
   ) async {
-    debugPrint('🔒 [AuthBloc] REGISTER REQUESTED for email: ${event.email}');
     emit(const AuthLoading());
     try {
-      debugPrint('🔒 [AuthBloc] Calling RegisterUseCase...');
       final user = await _registerUseCase(
         email: event.email,
         password: event.password,
       );
-      debugPrint(
-          '✅ [AuthBloc] REGISTER SUCCESS -> User ID: ${user.id}, Email: ${user.email}');
       emit(AuthAuthenticated(user: user));
     } on FirebaseAuthException catch (e) {
-      debugPrint('❌ [AuthBloc] REGISTER FAILED -> FirebaseAuthException: ${e.code}');
       final errorMessage = _mapFirebaseAuthExceptionToMessage(
         e,
         'Registration failed. Please try again.',
       );
       emit(AuthFailure(message: errorMessage));
-    } catch (e, stackTrace) {
-      debugPrint('❌ [AuthBloc] REGISTER FAILED -> Error: $e');
-      debugPrint('❌ [AuthBloc] StackTrace:\n$stackTrace');
+    } catch (_) {
       emit(const AuthFailure(message: 'Registration failed. Please try again.'));
     }
   }
@@ -97,13 +82,9 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     AuthLogoutRequested event,
     Emitter<AuthState> emit,
   ) async {
-    debugPrint('🔒 [AuthBloc] LOGOUT REQUESTED');
     try {
       await _logoutUseCase();
-      debugPrint('✅ [AuthBloc] LOGOUT SUCCESS');
-    } catch (e) {
-      debugPrint('⚠️ [AuthBloc] Logout error: $e');
-    }
+    } catch (_) {}
     emit(const AuthUnauthenticated());
   }
 
@@ -111,21 +92,17 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     AuthForgotPasswordRequested event,
     Emitter<AuthState> emit,
   ) async {
-    debugPrint('🔒 [AuthBloc] FORGOT PASSWORD REQUESTED for email: ${event.email}');
     emit(const AuthLoading());
     try {
       await _forgotPasswordUseCase(email: event.email);
-      debugPrint('✅ [AuthBloc] FORGOT PASSWORD SUCCESS');
       emit(const AuthPasswordResetEmailSent());
     } on FirebaseAuthException catch (e) {
-      debugPrint('❌ [AuthBloc] FirebaseAuthException: ${e.code}');
       final String errorMessage = _mapFirebaseAuthExceptionToMessage(
         e,
         'Failed to send the password reset email. Please try again.',
       );
       emit(AuthFailure(message: errorMessage));
-    } catch (e) {
-      debugPrint('❌ [AuthBloc] Generic error on forgot password: $e');
+    } catch (_) {
       emit(const AuthFailure(
           message: 'Failed to send the password reset email. Please try again.'));
     }
@@ -161,14 +138,10 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     AuthCheckRequested event,
     Emitter<AuthState> emit,
   ) {
-    debugPrint('🔒 [AuthBloc] AUTH CHECK REQUESTED');
     final user = _getCurrentUserUseCase();
     if (user != null) {
-      debugPrint(
-          '✅ [AuthBloc] User is currently authenticated (ID: ${user.id})');
       emit(AuthAuthenticated(user: user));
     } else {
-      debugPrint('ℹ️ [AuthBloc] No user currently authenticated');
       emit(const AuthUnauthenticated());
     }
   }
