@@ -22,6 +22,7 @@ class TaskLoaded extends TaskState {
   final TaskStatus? statusFilter;
   final TaskPriority? priorityFilter;
   final String searchQuery;
+  final TaskSortOption sortOption;
 
   const TaskLoaded({
     required this.tasks,
@@ -29,6 +30,7 @@ class TaskLoaded extends TaskState {
     this.statusFilter,
     this.priorityFilter,
     this.searchQuery = '',
+    this.sortOption = TaskSortOption.none,
   });
 
   @override
@@ -38,6 +40,7 @@ class TaskLoaded extends TaskState {
         statusFilter,
         priorityFilter,
         searchQuery,
+        sortOption,
       ];
 }
 

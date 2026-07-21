@@ -26,6 +26,23 @@ enum TaskStatus {
   }
 }
 
+enum TaskSortOption {
+  none,
+  dueDate,
+  createdAt;
+
+  String get label {
+    switch (this) {
+      case TaskSortOption.none:
+        return 'No Sorting';
+      case TaskSortOption.dueDate:
+        return 'Due Date';
+      case TaskSortOption.createdAt:
+        return 'Created Date';
+    }
+  }
+}
+
 class TaskEntity extends Equatable {
   final String id;
   final String title;

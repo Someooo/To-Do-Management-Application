@@ -87,4 +87,13 @@ class TaskRefreshed extends TaskEvent {
   const TaskRefreshed();
 }
 
+class TaskSortOptionChanged extends TaskEvent {
+  final TaskSortOption sortOption;
+
+  const TaskSortOptionChanged(this.sortOption);
+
+  @override
+  List<Object?> get props => [sortOption];
+}
+
 

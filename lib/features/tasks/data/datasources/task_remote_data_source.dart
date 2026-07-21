@@ -34,9 +34,8 @@ class TaskRemoteDataSourceImpl implements TaskRemoteDataSource {
   @override
   Stream<List<TaskModel>> getTasks() {
     return _tasksCollection.snapshots().map(
-          (snapshot) => snapshot.docs
-              .map((doc) => TaskModel.fromFirestore(doc))
-              .toList(),
+          (snapshot) =>
+              snapshot.docs.map((doc) => TaskModel.fromFirestore(doc)).toList(),
         );
   }
 

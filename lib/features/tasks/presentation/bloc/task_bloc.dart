@@ -19,6 +19,7 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
   TaskStatus? _currentStatusFilter;
   TaskPriority? _currentPriorityFilter;
   String _currentSearchQuery = '';
+  TaskSortOption _currentSortOption = TaskSortOption.none;
 
   TaskBloc({
     required this.getTasksUseCase,
@@ -36,6 +37,7 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
     on<TaskFilterChanged>(_onTaskFilterChanged);
     on<TaskSearchChanged>(_onTaskSearchChanged);
     on<TaskRefreshed>(_onTaskRefreshed);
+    on<TaskSortOptionChanged>(_onTaskSortOptionChanged);
   }
 
   Future<void> _onTaskRefreshed(
@@ -78,6 +80,7 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
       _currentStatusFilter,
       _currentPriorityFilter,
       _currentSearchQuery,
+      _currentSortOption,
     );
     emit(TaskLoaded(
       tasks: filtered,
@@ -85,6 +88,7 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
       statusFilter: _currentStatusFilter,
       priorityFilter: _currentPriorityFilter,
       searchQuery: _currentSearchQuery,
+      sortOption: _currentSortOption,
     ));
   }
 
@@ -99,6 +103,7 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
       _currentStatusFilter,
       _currentPriorityFilter,
       _currentSearchQuery,
+      _currentSortOption,
     );
     emit(TaskLoaded(
       tasks: filtered,
@@ -106,6 +111,7 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
       statusFilter: _currentStatusFilter,
       priorityFilter: _currentPriorityFilter,
       searchQuery: _currentSearchQuery,
+      sortOption: _currentSortOption,
     ));
   }
 
@@ -119,6 +125,7 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
       _currentStatusFilter,
       _currentPriorityFilter,
       _currentSearchQuery,
+      _currentSortOption,
     );
     emit(TaskLoaded(
       tasks: filtered,
@@ -126,6 +133,29 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
       statusFilter: _currentStatusFilter,
       priorityFilter: _currentPriorityFilter,
       searchQuery: _currentSearchQuery,
+      sortOption: _currentSortOption,
+    ));
+  }
+
+  void _onTaskSortOptionChanged(
+    TaskSortOptionChanged event,
+    Emitter<TaskState> emit,
+  ) {
+    _currentSortOption = event.sortOption;
+    final filtered = _filterTasks(
+      _latestAllTasks,
+      _currentStatusFilter,
+      _currentPriorityFilter,
+      _currentSearchQuery,
+      _currentSortOption,
+    );
+    emit(TaskLoaded(
+      tasks: filtered,
+      allTasks: _latestAllTasks,
+      statusFilter: _currentStatusFilter,
+      priorityFilter: _currentPriorityFilter,
+      searchQuery: _currentSearchQuery,
+      sortOption: _currentSortOption,
     ));
   }
 
@@ -134,10 +164,11 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
     TaskStatus? statusFilter,
     TaskPriority? priorityFilter,
     String searchQuery,
+    TaskSortOption sortOption,
   ) {
     final query = searchQuery.trim().toLowerCase();
 
-    return tasks.where((task) {
+    final filtered = tasks.where((task) {
       if (statusFilter != null && task.status != statusFilter) {
         return false;
       }
@@ -150,6 +181,29 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
       }
       return true;
     }).toList();
+
+    switch (sortOption) {
+      case TaskSortOption.none:
+        break;
+      case TaskSortOption.dueDate:
+        filtered.sort((a, b) {
+          if (a.dueDate == null && b.dueDate == null) return 0;
+          if (a.dueDate == null) return 1;
+          if (b.dueDate == null) return -1;
+          return a.dueDate!.compareTo(b.dueDate!);
+        });
+        break;
+      case TaskSortOption.createdAt:
+        filtered.sort((a, b) {
+          if (a.createdAt == null && b.createdAt == null) return 0;
+          if (a.createdAt == null) return 1;
+          if (b.createdAt == null) return -1;
+          return b.createdAt!.compareTo(a.createdAt!);
+        });
+        break;
+    }
+
+    return filtered;
   }
 
   void _onTaskErrorInternal(

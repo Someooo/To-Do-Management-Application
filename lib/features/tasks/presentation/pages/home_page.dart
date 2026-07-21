@@ -18,6 +18,8 @@ import '../widgets/task_filter_widget.dart';
 import '../widgets/task_list_widget.dart';
 import '../widgets/task_loading_widget.dart';
 import '../widgets/task_search_widget.dart';
+import '../widgets/task_sort_widget.dart';
+import '../../domain/entities/task_entity.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -120,6 +122,29 @@ class _HomePageContent extends StatelessWidget {
                                   ),
                                 );
                           },
+                        );
+                      },
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    child: BlocBuilder<TaskBloc, TaskState>(
+                      builder: (context, state) {
+                        final sortOption =
+                            state is TaskLoaded ? state.sortOption : TaskSortOption.none;
+                        return Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            TaskSortWidget(
+                              selectedSortOption: sortOption,
+                              onSortOptionChanged: (newOption) {
+                                context.read<TaskBloc>().add(
+                                      TaskSortOptionChanged(newOption),
+                                    );
+                              },
+                            ),
+                          ],
                         );
                       },
                     ),
