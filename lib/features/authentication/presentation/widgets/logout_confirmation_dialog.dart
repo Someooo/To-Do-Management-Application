@@ -12,11 +12,19 @@ class LogoutConfirmationDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final dialogBg = isDark ? const Color(0xFF1F2937) : Colors.white;
+    final iconBg = isDark ? Colors.blue.withValues(alpha: 0.15) : const Color(0xFFEFF6FF);
+    final primaryBlue = Theme.of(context).colorScheme.primary;
+    final textColor = Theme.of(context).colorScheme.onSurface;
+    final secondaryTextColor = Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6);
+    final cancelColor = isDark ? Colors.grey.shade400 : Colors.grey.shade700;
+
     return AlertDialog(
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(20),
       ),
-      backgroundColor: Colors.white,
+      backgroundColor: dialogBg,
       surfaceTintColor: Colors.transparent,
       titlePadding: const EdgeInsets.fromLTRB(24, 24, 24, 8),
       contentPadding: const EdgeInsets.fromLTRB(24, 0, 24, 20),
@@ -26,22 +34,22 @@ class LogoutConfirmationDialog extends StatelessWidget {
           Container(
             padding: const EdgeInsets.all(8),
             decoration: BoxDecoration(
-              color: const Color(0xFFEFF6FF),
+              color: iconBg,
               shape: BoxShape.circle,
             ),
-            child: const Icon(
+            child: Icon(
               Icons.logout_rounded,
-              color: Color(0xFF2563EB),
+              color: primaryBlue,
               size: 22,
             ),
           ),
           const SizedBox(width: 12),
-          const Text(
+          Text(
             'Sign Out',
             style: TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.bold,
-              color: Color(0xFF1A1C1F),
+              color: textColor,
             ),
           ),
         ],
@@ -50,7 +58,7 @@ class LogoutConfirmationDialog extends StatelessWidget {
         'Are you sure you want to sign out?',
         style: TextStyle(
           fontSize: 14,
-          color: Colors.grey.shade700,
+          color: secondaryTextColor,
           height: 1.4,
         ),
       ),
@@ -68,14 +76,14 @@ class LogoutConfirmationDialog extends StatelessWidget {
             style: TextStyle(
               fontSize: 14,
               fontWeight: FontWeight.w600,
-              color: Colors.grey.shade700,
+              color: cancelColor,
             ),
           ),
         ),
         ElevatedButton(
           onPressed: () => Navigator.of(context).pop(true),
           style: ElevatedButton.styleFrom(
-            backgroundColor: const Color(0xFF2563EB),
+            backgroundColor: primaryBlue,
             foregroundColor: Colors.white,
             elevation: 0,
             padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 10),

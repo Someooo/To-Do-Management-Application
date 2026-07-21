@@ -39,7 +39,8 @@ class _EditTaskPageContentState extends State<_EditTaskPageContent> {
 
   @override
   Widget build(BuildContext context) {
-    const bgColor = Color(0xFFF9F9FD);
+    final bgColor = Theme.of(context).scaffoldBackgroundColor;
+    final textColor = Theme.of(context).colorScheme.onSurface;
 
     return Scaffold(
       backgroundColor: bgColor,
@@ -48,15 +49,15 @@ class _EditTaskPageContentState extends State<_EditTaskPageContent> {
         elevation: 0,
         scrolledUnderElevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back_rounded, color: Color(0xFF1A1C1F)),
+          icon: Icon(Icons.arrow_back_rounded, color: textColor),
           onPressed: () => Navigator.of(context).pop(),
         ),
-        title: const Text(
+        title: Text(
           'Edit Task',
           style: TextStyle(
             fontSize: 20,
             fontWeight: FontWeight.bold,
-            color: Color(0xFF1A1C1F),
+            color: textColor,
           ),
         ),
       ),

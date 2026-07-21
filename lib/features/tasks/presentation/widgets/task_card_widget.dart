@@ -16,10 +16,15 @@ class TaskCardWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final cardBgColor = isDark ? const Color(0xFF1F2937) : Colors.white;
+    final textColor = Theme.of(context).colorScheme.onSurface;
+    final secondaryTextColor = Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6);
+
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: cardBgColor,
         borderRadius: BorderRadius.circular(16),
         boxShadow: const [
           BoxShadow(
@@ -40,26 +45,26 @@ class TaskCardWidget extends StatelessWidget {
                 Expanded(
                   child: Text(
                     task.title,
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
-                      color: Color(0xFF1A1C1F),
+                      color: textColor,
                     ),
                   ),
                 ),
                 const SizedBox(width: 8),
-                _buildPriorityBadge(task.priority),
+                _buildPriorityBadge(context, task.priority),
                 if (onEdit != null) ...[
                   const SizedBox(width: 6),
                   InkWell(
                     onTap: onEdit,
                     borderRadius: BorderRadius.circular(6),
-                    child: const Padding(
-                      padding: EdgeInsets.all(2),
+                    child: Padding(
+                      padding: const EdgeInsets.all(2),
                       child: Icon(
                         Icons.edit_outlined,
                         size: 18,
-                        color: Color(0xFF0060A9),
+                        color: isDark ? const Color(0xFF60A5FA) : const Color(0xFF0060A9),
                       ),
                     ),
                   ),
@@ -74,7 +79,7 @@ class TaskCardWidget extends StatelessWidget {
                       child: Icon(
                         Icons.delete_outline_rounded,
                         size: 18,
-                        color: Colors.red.shade600,
+                        color: isDark ? Colors.red.shade400 : Colors.red.shade600,
                       ),
                     ),
                   ),
@@ -89,7 +94,7 @@ class TaskCardWidget extends StatelessWidget {
                 overflow: TextOverflow.ellipsis,
                 style: TextStyle(
                   fontSize: 14,
-                  color: Colors.grey.shade600,
+                  color: secondaryTextColor,
                   height: 1.4,
                 ),
               ),
@@ -98,14 +103,14 @@ class TaskCardWidget extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                _buildStatusBadge(task.status),
+                _buildStatusBadge(context, task.status),
                 if (task.dueDate != null)
                   Row(
                     children: [
                       Icon(
                         Icons.calendar_today_rounded,
                         size: 14,
-                        color: Colors.grey.shade500,
+                        color: secondaryTextColor,
                       ),
                       const SizedBox(width: 4),
                       Text(
@@ -113,7 +118,7 @@ class TaskCardWidget extends StatelessWidget {
                         style: TextStyle(
                           fontSize: 12,
                           fontWeight: FontWeight.w500,
-                          color: Colors.grey.shade600,
+                          color: secondaryTextColor,
                         ),
                       ),
                     ],
@@ -126,25 +131,26 @@ class TaskCardWidget extends StatelessWidget {
     );
   }
 
-  Widget _buildPriorityBadge(TaskPriority priority) {
+  Widget _buildPriorityBadge(BuildContext context, TaskPriority priority) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     Color bg;
     Color fg;
     String label;
 
     switch (priority) {
       case TaskPriority.high:
-        bg = Colors.red.shade50;
-        fg = Colors.red.shade700;
+        bg = isDark ? Colors.red.withValues(alpha: 0.15) : Colors.red.shade50;
+        fg = isDark ? Colors.red.shade300 : Colors.red.shade700;
         label = 'High';
         break;
       case TaskPriority.medium:
-        bg = Colors.orange.shade50;
-        fg = Colors.orange.shade800;
+        bg = isDark ? Colors.orange.withValues(alpha: 0.15) : Colors.orange.shade50;
+        fg = isDark ? Colors.orange.shade300 : Colors.orange.shade800;
         label = 'Medium';
         break;
       case TaskPriority.low:
-        bg = Colors.green.shade50;
-        fg = Colors.green.shade700;
+        bg = isDark ? Colors.green.withValues(alpha: 0.15) : Colors.green.shade50;
+        fg = isDark ? Colors.green.shade300 : Colors.green.shade700;
         label = 'Low';
         break;
     }
@@ -166,25 +172,26 @@ class TaskCardWidget extends StatelessWidget {
     );
   }
 
-  Widget _buildStatusBadge(TaskStatus status) {
+  Widget _buildStatusBadge(BuildContext context, TaskStatus status) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     Color bg;
     Color fg;
     String label;
 
     switch (status) {
       case TaskStatus.todo:
-        bg = const Color(0xFFE8F1FF);
-        fg = const Color(0xFF0060A9);
+        bg = isDark ? const Color(0xFF0060A9).withValues(alpha: 0.2) : const Color(0xFFE8F1FF);
+        fg = isDark ? const Color(0xFF60A5FA) : const Color(0xFF0060A9);
         label = 'To Do';
         break;
       case TaskStatus.inProgress:
-        bg = Colors.purple.shade50;
-        fg = Colors.purple.shade700;
+        bg = isDark ? Colors.purple.withValues(alpha: 0.15) : Colors.purple.shade50;
+        fg = isDark ? Colors.purple.shade300 : Colors.purple.shade700;
         label = 'In Progress';
         break;
       case TaskStatus.completed:
-        bg = Colors.teal.shade50;
-        fg = Colors.teal.shade700;
+        bg = isDark ? Colors.teal.withValues(alpha: 0.15) : Colors.teal.shade50;
+        fg = isDark ? Colors.teal.shade300 : Colors.teal.shade700;
         label = 'Completed';
         break;
     }

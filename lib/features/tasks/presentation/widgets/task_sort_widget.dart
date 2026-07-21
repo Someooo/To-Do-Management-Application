@@ -13,7 +13,10 @@ class TaskSortWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const textDark = Color(0xFF1F2937);
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final textDark = isDark ? Colors.white : const Color(0xFF1F2937);
+    final unselectedBg = isDark ? const Color(0xFF1F2937) : Colors.white;
+    final borderColor = isDark ? const Color(0xFF374151) : const Color(0xFFE5E7EB);
     const primaryColor = Color(0xFF3B82F6);
 
     return PopupMenuButton<TaskSortOption>(
@@ -23,7 +26,7 @@ class TaskSortWidget extends StatelessWidget {
         borderRadius: BorderRadius.circular(16),
       ),
       elevation: 3,
-      color: Colors.white,
+      color: unselectedBg,
       itemBuilder: (context) => TaskSortOption.values.map((option) {
         final isSelected = option == selectedSortOption;
         return PopupMenuItem<TaskSortOption>(
@@ -59,10 +62,10 @@ class TaskSortWidget extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: unselectedBg,
           borderRadius: BorderRadius.circular(12),
           border: Border.all(
-            color: const Color(0xFFE5E7EB),
+            color: borderColor,
             width: 1,
           ),
           boxShadow: const [
@@ -76,24 +79,24 @@ class TaskSortWidget extends StatelessWidget {
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Icon(
+            Icon(
               Icons.sort_rounded,
-              color: Color(0xFF4B5563),
+              color: isDark ? Colors.grey.shade400 : const Color(0xFF4B5563),
               size: 18,
             ),
             const SizedBox(width: 8),
             Text(
               'Sort: ${selectedSortOption.label}',
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 13,
                 fontWeight: FontWeight.w600,
-                color: Color(0xFF374151),
+                color: isDark ? Colors.grey.shade300 : const Color(0xFF374151),
               ),
             ),
             const SizedBox(width: 4),
-            const Icon(
+            Icon(
               Icons.arrow_drop_down_rounded,
-              color: Color(0xFF4B5563),
+              color: isDark ? Colors.grey.shade400 : const Color(0xFF4B5563),
               size: 20,
             ),
           ],

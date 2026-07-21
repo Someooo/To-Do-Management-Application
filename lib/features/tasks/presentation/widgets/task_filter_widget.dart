@@ -17,9 +17,13 @@ class TaskFilterWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     const primaryColor = Color(0xFF3B82F6);
-    const unselectedBg = Color(0xFFF3F4F6);
-    const textDark = Color(0xFF1F2937);
+    final unselectedBg = isDark ? const Color(0xFF374151) : const Color(0xFFF3F4F6);
+    final textDark = isDark ? Colors.white : const Color(0xFF1F2937);
+    final labelColor = isDark ? Colors.grey.shade400 : const Color(0xFF4B5563);
+    final borderUnselectedColor = isDark ? const Color(0xFF4B5563) : const Color(0xFFD1D5DB);
+    final textUnselectedColor = isDark ? Colors.grey.shade300 : const Color(0xFF374151);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -87,12 +91,12 @@ class TaskFilterWidget extends StatelessWidget {
           physics: const BouncingScrollPhysics(),
           child: Row(
             children: [
-              const Text(
+              Text(
                 'Priority:',
                 style: TextStyle(
                   fontSize: 14,
                   fontWeight: FontWeight.w600,
-                  color: Color(0xFF4B5563),
+                  color: labelColor,
                 ),
               ),
               const SizedBox(width: 10),
@@ -101,6 +105,8 @@ class TaskFilterWidget extends StatelessWidget {
                 isSelected: selectedPriority == null,
                 onTap: () => onPriorityChanged(null),
                 primaryColor: primaryColor,
+                borderColor: borderUnselectedColor,
+                textColor: textUnselectedColor,
               ),
               const SizedBox(width: 8),
               _buildPriorityCapsule(
@@ -110,6 +116,8 @@ class TaskFilterWidget extends StatelessWidget {
                   selectedPriority == TaskPriority.low ? null : TaskPriority.low,
                 ),
                 primaryColor: primaryColor,
+                borderColor: borderUnselectedColor,
+                textColor: textUnselectedColor,
               ),
               const SizedBox(width: 8),
               _buildPriorityCapsule(
@@ -121,6 +129,8 @@ class TaskFilterWidget extends StatelessWidget {
                       : TaskPriority.medium,
                 ),
                 primaryColor: primaryColor,
+                borderColor: borderUnselectedColor,
+                textColor: textUnselectedColor,
               ),
               const SizedBox(width: 8),
               _buildPriorityCapsule(
@@ -132,6 +142,8 @@ class TaskFilterWidget extends StatelessWidget {
                       : TaskPriority.high,
                 ),
                 primaryColor: primaryColor,
+                borderColor: borderUnselectedColor,
+                textColor: textUnselectedColor,
               ),
             ],
           ),
@@ -184,6 +196,8 @@ class TaskFilterWidget extends StatelessWidget {
     required bool isSelected,
     required VoidCallback onTap,
     required Color primaryColor,
+    required Color borderColor,
+    required Color textColor,
   }) {
     return InkWell(
       onTap: onTap,
@@ -197,14 +211,14 @@ class TaskFilterWidget extends StatelessWidget {
               : Colors.transparent,
           borderRadius: BorderRadius.circular(20),
           border: Border.all(
-            color: isSelected ? primaryColor : const Color(0xFFD1D5DB),
+            color: isSelected ? primaryColor : borderColor,
             width: isSelected ? 1.8 : 1.2,
           ),
         ),
         child: Text(
           label,
           style: TextStyle(
-            color: isSelected ? primaryColor : const Color(0xFF374151),
+            color: isSelected ? primaryColor : textColor,
             fontSize: 13,
             fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
           ),

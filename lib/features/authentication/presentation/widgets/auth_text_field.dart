@@ -33,9 +33,10 @@ class _AuthTextFieldState extends State<AuthTextField> {
 
   @override
   Widget build(BuildContext context) {
-    const labelColor = Color(0xFF404752);
-    const inputBgColor = Color(0xFFF3F3F7);
-    const textColor = Color(0xFF1A1C1F);
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final labelColor = isDark ? Colors.grey.shade400 : const Color(0xFF404752);
+    final inputBgColor = isDark ? const Color(0xFF1F2937) : const Color(0xFFF3F3F7);
+    final textColor = Theme.of(context).colorScheme.onSurface;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -44,7 +45,7 @@ class _AuthTextFieldState extends State<AuthTextField> {
           padding: const EdgeInsets.only(left: 4, bottom: 6),
           child: Text(
             widget.label,
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 12,
               fontWeight: FontWeight.w600,
               color: labelColor,
@@ -59,7 +60,7 @@ class _AuthTextFieldState extends State<AuthTextField> {
           onChanged: widget.onChanged,
           validator: widget.validator,
           autovalidateMode: widget.autovalidateMode,
-          style: const TextStyle(
+          style: TextStyle(
             fontSize: 15,
             color: textColor,
           ),

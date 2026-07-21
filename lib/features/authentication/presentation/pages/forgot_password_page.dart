@@ -56,8 +56,10 @@ class _ForgotPasswordPageContentState
 
   @override
   Widget build(BuildContext context) {
-    const bgColor = Color(0xFFF9F9FD);
-    const primaryColor = Color(0xFF0060A9);
+    final bgColor = Theme.of(context).scaffoldBackgroundColor;
+    final primaryColor = Theme.of(context).colorScheme.primary;
+    final textColor = Theme.of(context).colorScheme.onSurface;
+    final secondaryTextColor = Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6);
 
     return Scaffold(
       backgroundColor: bgColor,
@@ -65,7 +67,7 @@ class _ForgotPasswordPageContentState
         backgroundColor: bgColor,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back_rounded, color: Color(0xFF1A1C1F)),
+          icon: Icon(Icons.arrow_back_rounded, color: textColor),
           onPressed: () {
             if (Navigator.of(context).canPop()) {
               Navigator.of(context).pop();
@@ -98,19 +100,19 @@ class _ForgotPasswordPageContentState
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                     const SizedBox(height: 16),
-                    const Icon(
+                    Icon(
                       Icons.lock_reset_rounded,
                       size: 64,
                       color: primaryColor,
                     ),
                     const SizedBox(height: 24),
-                    const Text(
+                    Text(
                       'Forgot Password?',
                       textAlign: TextAlign.center,
                       style: TextStyle(
                         fontSize: 26,
                         fontWeight: FontWeight.bold,
-                        color: Color(0xFF1A1C1F),
+                        color: textColor,
                       ),
                     ),
                     const SizedBox(height: 12),
@@ -119,7 +121,7 @@ class _ForgotPasswordPageContentState
                       textAlign: TextAlign.center,
                       style: TextStyle(
                         fontSize: 14,
-                        color: Colors.grey.shade700,
+                        color: secondaryTextColor,
                         height: 1.4,
                       ),
                     ),
@@ -145,7 +147,7 @@ class _ForgotPasswordPageContentState
                                 .pushReplacementNamed(AppRoutes.login);
                           }
                         },
-                        child: const Text(
+                        child: Text(
                           'Back to Login',
                           style: TextStyle(
                             fontSize: 14,

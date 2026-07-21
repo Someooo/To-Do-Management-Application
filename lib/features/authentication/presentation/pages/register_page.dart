@@ -65,7 +65,7 @@ class _RegisterPageContentState extends State<_RegisterPageContent> {
 
   @override
   Widget build(BuildContext context) {
-    const bgColor = Color(0xFFF9F9FD);
+    final bgColor = Theme.of(context).scaffoldBackgroundColor;
 
     return Scaffold(
       backgroundColor: bgColor,

@@ -5,6 +5,12 @@ class EmptyTasksWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final iconBgColor = isDark ? Colors.grey.shade800 : const Color(0xFFF3F3F7);
+    final primaryColor = Theme.of(context).colorScheme.primary;
+    final textColor = Theme.of(context).colorScheme.onSurface;
+    final secondaryTextColor = Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6);
+
     return Center(
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 32),
@@ -13,23 +19,23 @@ class EmptyTasksWidget extends StatelessWidget {
           children: [
             Container(
               padding: const EdgeInsets.all(20),
-              decoration: const BoxDecoration(
-                color: Color(0xFFF3F3F7),
+              decoration: BoxDecoration(
+                color: iconBgColor,
                 shape: BoxShape.circle,
               ),
-              child: const Icon(
+              child: Icon(
                 Icons.assignment_outlined,
                 size: 56,
-                color: Color(0xFF0060A9),
+                color: primaryColor,
               ),
             ),
             const SizedBox(height: 20),
-            const Text(
+            Text(
               'No Tasks Yet',
               style: TextStyle(
                 fontSize: 20,
                 fontWeight: FontWeight.bold,
-                color: Color(0xFF1A1C1F),
+                color: textColor,
               ),
             ),
             const SizedBox(height: 8),
@@ -38,7 +44,7 @@ class EmptyTasksWidget extends StatelessWidget {
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontSize: 14,
-                color: Colors.grey.shade600,
+                color: secondaryTextColor,
                 height: 1.4,
               ),
             ),

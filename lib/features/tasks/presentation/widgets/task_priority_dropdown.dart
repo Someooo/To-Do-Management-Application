@@ -13,14 +13,16 @@ class TaskPriorityDropdown extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const labelColor = Color(0xFF404752);
-    const inputBgColor = Colors.white;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final labelColor = isDark ? Colors.grey.shade400 : const Color(0xFF404752);
+    final inputBgColor = isDark ? const Color(0xFF1F2937) : Colors.white;
+    final textColor = Theme.of(context).colorScheme.onSurface;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Padding(
-          padding: EdgeInsets.only(left: 4, bottom: 6),
+        Padding(
+          padding: const EdgeInsets.only(left: 4, bottom: 6),
           child: Text(
             'Priority',
             style: TextStyle(
@@ -35,16 +37,16 @@ class TaskPriorityDropdown extends StatelessWidget {
           initialValue: value,
           onChanged: onChanged,
           isExpanded: true,
-          dropdownColor: Colors.white,
-          icon: const Icon(Icons.arrow_drop_down_rounded, color: labelColor),
-          style: const TextStyle(
+          dropdownColor: inputBgColor,
+          icon: Icon(Icons.arrow_drop_down_rounded, color: labelColor),
+          style: TextStyle(
             fontSize: 15,
-            color: Color(0xFF1A1C1F),
+            color: textColor,
           ),
           decoration: InputDecoration(
             filled: true,
             fillColor: inputBgColor,
-            prefixIcon: const Icon(
+            prefixIcon: Icon(
               Icons.flag_outlined,
               color: labelColor,
               size: 20,

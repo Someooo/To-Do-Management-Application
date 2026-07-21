@@ -46,7 +46,7 @@ class _HomePageContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const bgColor = Color(0xFFF9F9FD);
+    final bgColor = Theme.of(context).scaffoldBackgroundColor;
 
     return BlocListener<AuthBloc, AuthState>(
       listener: (context, state) {

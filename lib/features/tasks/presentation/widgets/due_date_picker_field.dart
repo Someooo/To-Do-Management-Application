@@ -44,9 +44,10 @@ class DueDatePickerField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const labelColor = Color(0xFF404752);
-    const inputBgColor = Color(0xFFF3F3F7);
-    const textColor = Color(0xFF1A1C1F);
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final labelColor = isDark ? Colors.grey.shade400 : const Color(0xFF404752);
+    final inputBgColor = isDark ? const Color(0xFF1F2937) : const Color(0xFFF3F3F7);
+    final textColor = Theme.of(context).colorScheme.onSurface;
 
     final controller = TextEditingController(
       text: selectedDate != null
@@ -57,8 +58,8 @@ class DueDatePickerField extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Padding(
-          padding: EdgeInsets.only(left: 4, bottom: 6),
+        Padding(
+          padding: const EdgeInsets.only(left: 4, bottom: 6),
           child: Text(
             'Due Date',
             style: TextStyle(
@@ -89,7 +90,7 @@ class DueDatePickerField extends StatelessWidget {
             }
             return null;
           },
-          style: const TextStyle(
+          style: TextStyle(
             fontSize: 15,
             color: textColor,
           ),
@@ -101,7 +102,7 @@ class DueDatePickerField extends StatelessWidget {
               fontSize: 15,
               color: Colors.grey.shade400,
             ),
-            prefixIcon: const Icon(
+            prefixIcon: Icon(
               Icons.calendar_today_rounded,
               color: labelColor,
               size: 20,

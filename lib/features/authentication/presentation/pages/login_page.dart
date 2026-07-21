@@ -63,7 +63,7 @@ class _LoginPageContentState extends State<_LoginPageContent> {
 
   @override
   Widget build(BuildContext context) {
-    const bgColor = Color(0xFFF9F9FD);
+    final bgColor = Theme.of(context).scaffoldBackgroundColor;
 
     return Scaffold(
       backgroundColor: bgColor,
@@ -111,12 +111,12 @@ class _LoginPageContentState extends State<_LoginPageContent> {
                           minimumSize: Size.zero,
                           tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                         ),
-                        child: const Text(
+                        child: Text(
                           'Forgot password?',
                           style: TextStyle(
                             fontSize: 13,
                             fontWeight: FontWeight.w600,
-                            color: Color(0xFF0060A9),
+                            color: Theme.of(context).colorScheme.primary,
                           ),
                         ),
                       ),

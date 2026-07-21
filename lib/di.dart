@@ -21,13 +21,18 @@ import 'package:my_template/features/tasks/domain/usecases/delete_task_usecase.d
 import 'package:my_template/features/tasks/domain/usecases/get_tasks_usecase.dart';
 import 'package:my_template/features/tasks/domain/usecases/update_task_usecase.dart';
 import 'package:my_template/features/tasks/presentation/bloc/task_bloc.dart';
+import 'package:my_template/core/bloc/theme_bloc.dart';
 
 final getIt = GetIt.instance;
 
 Future<void> configureDependencies() async {
   // Core Services
   getIt.registerLazySingleton<ApiService>(() => ApiService());
-  getIt.registerLazySingleton<StorageService>(() => StorageService());
+  
+  final storageService = StorageService();
+  await storageService.init();
+  getIt.registerSingleton<StorageService>(storageService);
+  
   getIt.registerLazySingleton<NetworkService>(() => NetworkService());
 
   // Authentication Feature
@@ -70,4 +75,6 @@ Future<void> configureDependencies() async {
         updateTaskUseCase: getIt(),
         deleteTaskUseCase: getIt(),
       ));
+
+  getIt.registerFactory(() => ThemeBloc(storageService: getIt()));
 }

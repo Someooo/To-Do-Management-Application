@@ -12,7 +12,11 @@ class AuthHeaderWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const primaryBlue = Color(0xFF0060A9);
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final primaryBlue = Theme.of(context).colorScheme.primary;
+    final circleBg = isDark ? const Color(0xFF1F2937) : Colors.white;
+    final textColor = Theme.of(context).colorScheme.onSurface;
+    final secondaryTextColor = Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6);
 
     return Column(
       children: [
@@ -42,7 +46,7 @@ class AuthHeaderWidget extends StatelessWidget {
                 width: 100,
                 height: 100,
                 decoration: BoxDecoration(
-                  color: Colors.white,
+                  color: circleBg,
                   shape: BoxShape.circle,
                   boxShadow: [
                     BoxShadow(
@@ -52,7 +56,7 @@ class AuthHeaderWidget extends StatelessWidget {
                     ),
                   ],
                 ),
-                child: const Icon(
+                child: Icon(
                   Icons.task_alt_rounded,
                   size: 52,
                   color: primaryBlue,
@@ -65,10 +69,10 @@ class AuthHeaderWidget extends StatelessWidget {
         Text(
           title,
           textAlign: TextAlign.center,
-          style: const TextStyle(
+          style: TextStyle(
             fontSize: 28,
             fontWeight: FontWeight.bold,
-            color: Color(0xFF1A1C1F),
+            color: textColor,
             letterSpacing: -0.5,
           ),
         ),
@@ -76,10 +80,10 @@ class AuthHeaderWidget extends StatelessWidget {
         Text(
           subtitle,
           textAlign: TextAlign.center,
-          style: const TextStyle(
+          style: TextStyle(
             fontSize: 15,
             fontWeight: FontWeight.w400,
-            color: Color(0xFF404752),
+            color: secondaryTextColor,
           ),
         ),
       ],

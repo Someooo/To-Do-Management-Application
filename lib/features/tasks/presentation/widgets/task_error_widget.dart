@@ -12,6 +12,14 @@ class TaskErrorWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final errBgColor = isDark ? Colors.red.withValues(alpha: 0.15) : Colors.red.shade50;
+    final errIconColor = isDark ? Colors.red.shade400 : Colors.red.shade600;
+    final textColor = Theme.of(context).colorScheme.onSurface;
+    final secondaryTextColor = Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6);
+    final buttonBg = Theme.of(context).colorScheme.primary;
+    final buttonFg = Theme.of(context).colorScheme.onPrimary;
+
     return Center(
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 32),
@@ -21,22 +29,22 @@ class TaskErrorWidget extends StatelessWidget {
             Container(
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
-                color: Colors.red.shade50,
+                color: errBgColor,
                 shape: BoxShape.circle,
               ),
               child: Icon(
                 Icons.error_outline_rounded,
                 size: 48,
-                color: Colors.red.shade600,
+                color: errIconColor,
               ),
             ),
             const SizedBox(height: 16),
-            const Text(
+            Text(
               'Something went wrong',
               style: TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
-                color: Color(0xFF1A1C1F),
+                color: textColor,
               ),
             ),
             const SizedBox(height: 8),
@@ -45,7 +53,7 @@ class TaskErrorWidget extends StatelessWidget {
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontSize: 14,
-                color: Colors.grey.shade700,
+                color: secondaryTextColor,
                 height: 1.4,
               ),
             ),
@@ -54,8 +62,8 @@ class TaskErrorWidget extends StatelessWidget {
               ElevatedButton.icon(
                 onPressed: onRetry,
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFF0060A9),
-                  foregroundColor: Colors.white,
+                  backgroundColor: buttonBg,
+                  foregroundColor: buttonFg,
                   padding: const EdgeInsets.symmetric(
                     horizontal: 24,
                     vertical: 12,

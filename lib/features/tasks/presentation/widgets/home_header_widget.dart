@@ -4,6 +4,9 @@ import '../../../authentication/presentation/bloc/auth_bloc.dart';
 import '../../../authentication/presentation/bloc/auth_event.dart';
 import '../../../authentication/presentation/bloc/auth_state.dart';
 import '../../../authentication/presentation/widgets/logout_confirmation_dialog.dart';
+import '../../../../core/bloc/theme_bloc.dart';
+import '../../../../core/bloc/theme_event.dart';
+import '../../../../core/bloc/theme_state.dart';
 
 class HomeHeaderWidget extends StatelessWidget {
   final int taskCount;
@@ -73,12 +76,12 @@ class HomeHeaderWidget extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Text(
+                      Text(
                         'TaskFlow',
                         style: TextStyle(
                           fontSize: 20,
                           fontWeight: FontWeight.bold,
-                          color: Color(0xFF1A1C1F),
+                          color: Theme.of(context).colorScheme.onSurface,
                           letterSpacing: -0.3,
                         ),
                       ),
@@ -89,50 +92,86 @@ class HomeHeaderWidget extends StatelessWidget {
                           overflow: TextOverflow.ellipsis,
                           style: TextStyle(
                             fontSize: 13,
-                            color: Colors.grey.shade600,
+                            color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6),
                             fontWeight: FontWeight.w500,
                           ),
                         ),
                     ],
                   ),
                 ),
-                IconButton(
-                  icon: const Icon(
-                    Icons.logout_rounded,
-                    color: Color(0xFF404752),
-                    size: 22,
-                  ),
-                  tooltip: 'Logout',
-                  style: IconButton.styleFrom(
-                    backgroundColor: const Color(0xFFF3F4F6),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
+                Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    IconButton(
+                      icon: Icon(
+                        Icons.logout_rounded,
+                        color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7),
+                        size: 22,
+                      ),
+                      tooltip: 'Logout',
+                      style: IconButton.styleFrom(
+                        backgroundColor: Theme.of(context).brightness == Brightness.dark
+                            ? Colors.grey.shade800
+                            : const Color(0xFFF3F4F6),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                      ),
+                      onPressed: () async {
+                        final confirmed =
+                            await LogoutConfirmationDialog.show(context);
+                        if (confirmed == true && context.mounted) {
+                          context
+                              .read<AuthBloc>()
+                              .add(const AuthLogoutRequested());
+                        }
+                      },
                     ),
-                  ),
-                  onPressed: () async {
-                    final confirmed =
-                        await LogoutConfirmationDialog.show(context);
-                    if (confirmed == true && context.mounted) {
-                      context
-                          .read<AuthBloc>()
-                          .add(const AuthLogoutRequested());
-                    }
-                  },
+                    const SizedBox(height: 8),
+                    BlocBuilder<ThemeBloc, ThemeState>(
+                      builder: (context, themeState) {
+                        final isDark = themeState.themeMode == ThemeMode.dark;
+                        return IconButton(
+                          icon: Icon(
+                            isDark ? Icons.light_mode_outlined : Icons.dark_mode_outlined,
+                            color: isDark ? const Color(0xFFFBBF24) : const Color(0xFF4B5563),
+                            size: 22,
+                          ),
+                          tooltip: isDark ? 'Switch to Light Mode' : 'Switch to Dark Mode',
+                          style: IconButton.styleFrom(
+                            backgroundColor: isDark
+                                ? Colors.grey.shade800
+                                : const Color(0xFFF3F4F6),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                          ),
+                          onPressed: () {
+                            context.read<ThemeBloc>().add(
+                                  ThemeThemeChanged(
+                                    isDark ? ThemeMode.light : ThemeMode.dark,
+                                  ),
+                                );
+                          },
+                        );
+                      },
+                    ),
+                  ],
                 ),
               ],
             ),
             const SizedBox(height: 20),
             Row(
-              children: const [
+              children: [
                 Text(
                   'Welcome Back ',
                   style: TextStyle(
                     fontSize: 15,
                     fontWeight: FontWeight.w500,
-                    color: Color(0xFF6B7280),
+                    color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6),
                   ),
                 ),
-                Text(
+                const Text(
                   '👋',
                   style: TextStyle(fontSize: 16),
                 ),
@@ -143,10 +182,10 @@ class HomeHeaderWidget extends StatelessWidget {
               taskCount > 0
                   ? 'You have $taskCount ${taskCount == 1 ? 'task' : 'tasks'} today.'
                   : "Let's manage your tasks today.",
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 24,
                 fontWeight: FontWeight.w800,
-                color: Color(0xFF111827),
+                color: Theme.of(context).colorScheme.onSurface,
                 letterSpacing: -0.5,
               ),
             ),

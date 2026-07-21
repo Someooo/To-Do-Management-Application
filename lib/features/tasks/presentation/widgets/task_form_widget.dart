@@ -89,17 +89,18 @@ class _TaskFormWidgetState extends State<TaskFormWidget> {
 
   @override
   Widget build(BuildContext context) {
-    const labelColor = Color(0xFF404752);
-    const inputBgColor = Color(0xFFF3F3F7);
-    const textColor = Color(0xFF1A1C1F);
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final labelColor = isDark ? Colors.grey.shade400 : const Color(0xFF404752);
+    final inputBgColor = isDark ? const Color(0xFF1F2937) : const Color(0xFFF3F3F7);
+    final textColor = Theme.of(context).colorScheme.onSurface;
 
     return Form(
       key: _formKey,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          const Padding(
-            padding: EdgeInsets.only(left: 4, bottom: 6),
+          Padding(
+            padding: const EdgeInsets.only(left: 4, bottom: 6),
             child: Text(
               'Task Title',
               style: TextStyle(
@@ -121,7 +122,7 @@ class _TaskFormWidgetState extends State<TaskFormWidget> {
               }
               return null;
             },
-            style: const TextStyle(fontSize: 15, color: textColor),
+            style: TextStyle(fontSize: 15, color: textColor),
             decoration: InputDecoration(
               counterText: '${_titleController.text.length}/100',
               counterStyle: const TextStyle(
@@ -133,7 +134,7 @@ class _TaskFormWidgetState extends State<TaskFormWidget> {
               fillColor: inputBgColor,
               hintText: 'Enter task title',
               hintStyle: TextStyle(fontSize: 15, color: Colors.grey.shade400),
-              prefixIcon: const Icon(
+              prefixIcon: Icon(
                 Icons.title_rounded,
                 color: labelColor,
                 size: 20,
@@ -166,8 +167,8 @@ class _TaskFormWidgetState extends State<TaskFormWidget> {
           ),
           const SizedBox(height: 16),
 
-          const Padding(
-            padding: EdgeInsets.only(left: 4, bottom: 6),
+          Padding(
+            padding: const EdgeInsets.only(left: 4, bottom: 6),
             child: Text(
               'Description',
               style: TextStyle(
@@ -187,14 +188,14 @@ class _TaskFormWidgetState extends State<TaskFormWidget> {
               }
               return null;
             },
-            style: const TextStyle(fontSize: 15, color: textColor),
+            style: TextStyle(fontSize: 15, color: textColor),
             decoration: InputDecoration(
               filled: true,
               fillColor: inputBgColor,
               hintText: 'Enter task description',
               hintStyle: TextStyle(fontSize: 15, color: Colors.grey.shade400),
-              prefixIcon: const Padding(
-                padding: EdgeInsets.only(bottom: 40),
+              prefixIcon: Padding(
+                padding: const EdgeInsets.only(bottom: 40),
                 child: Icon(
                   Icons.notes_rounded,
                   color: labelColor,

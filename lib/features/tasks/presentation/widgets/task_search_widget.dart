@@ -56,8 +56,10 @@ class _TaskSearchWidgetState extends State<TaskSearchWidget> {
 
   @override
   Widget build(BuildContext context) {
-    const inputBgColor = Colors.white;
-    const labelColor = Color(0xFF6B7280);
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final inputBgColor = isDark ? const Color(0xFF1F2937) : Colors.white;
+    final labelColor = isDark ? Colors.grey.shade400 : const Color(0xFF6B7280);
+    final textColor = Theme.of(context).colorScheme.onSurface;
 
     return Container(
       decoration: BoxDecoration(
@@ -74,26 +76,26 @@ class _TaskSearchWidgetState extends State<TaskSearchWidget> {
       child: TextField(
         controller: _controller,
         onChanged: _onTextTyped,
-        style: const TextStyle(
+        style: TextStyle(
           fontSize: 15,
-          color: Color(0xFF111827),
+          color: textColor,
           fontWeight: FontWeight.w500,
         ),
         decoration: InputDecoration(
           hintText: 'Search tasks...',
-          hintStyle: const TextStyle(
+          hintStyle: TextStyle(
             fontSize: 15,
             color: labelColor,
             fontWeight: FontWeight.w400,
           ),
-          prefixIcon: const Icon(
+          prefixIcon: Icon(
             Icons.search_rounded,
             color: labelColor,
             size: 22,
           ),
           suffixIcon: _controller.text.isNotEmpty
               ? IconButton(
-                  icon: const Icon(
+                  icon: Icon(
                     Icons.close_rounded,
                     color: labelColor,
                     size: 20,

@@ -12,11 +12,20 @@ class DeleteTaskDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final dialogBg = isDark ? const Color(0xFF1F2937) : Colors.white;
+    final errBgColor = isDark ? Colors.red.withValues(alpha: 0.15) : Colors.red.shade50;
+    final errIconColor = isDark ? Colors.red.shade400 : Colors.red.shade700;
+    final textColor = Theme.of(context).colorScheme.onSurface;
+    final secondaryTextColor = Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6);
+    final cancelColor = isDark ? Colors.grey.shade400 : Colors.grey.shade700;
+    final deleteBg = isDark ? Colors.red.shade400 : Colors.red.shade600;
+
     return AlertDialog(
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(20),
       ),
-      backgroundColor: Colors.white,
+      backgroundColor: dialogBg,
       surfaceTintColor: Colors.transparent,
       titlePadding: const EdgeInsets.fromLTRB(24, 24, 24, 8),
       contentPadding: const EdgeInsets.fromLTRB(24, 0, 24, 20),
@@ -26,22 +35,22 @@ class DeleteTaskDialog extends StatelessWidget {
           Container(
             padding: const EdgeInsets.all(8),
             decoration: BoxDecoration(
-              color: Colors.red.shade50,
+              color: errBgColor,
               shape: BoxShape.circle,
             ),
             child: Icon(
               Icons.delete_outline_rounded,
-              color: Colors.red.shade700,
+              color: errIconColor,
               size: 22,
             ),
           ),
           const SizedBox(width: 12),
-          const Text(
+          Text(
             'Delete Task',
             style: TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.bold,
-              color: Color(0xFF1A1C1F),
+              color: textColor,
             ),
           ),
         ],
@@ -50,7 +59,7 @@ class DeleteTaskDialog extends StatelessWidget {
         'Are you sure you want to delete this task? This action cannot be undone.',
         style: TextStyle(
           fontSize: 14,
-          color: Colors.grey.shade700,
+          color: secondaryTextColor,
           height: 1.4,
         ),
       ),
@@ -68,14 +77,14 @@ class DeleteTaskDialog extends StatelessWidget {
             style: TextStyle(
               fontSize: 14,
               fontWeight: FontWeight.w600,
-              color: Colors.grey.shade700,
+              color: cancelColor,
             ),
           ),
         ),
         ElevatedButton(
           onPressed: () => Navigator.of(context).pop(true),
           style: ElevatedButton.styleFrom(
-            backgroundColor: Colors.red.shade600,
+            backgroundColor: deleteBg,
             foregroundColor: Colors.white,
             elevation: 0,
             padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 10),
