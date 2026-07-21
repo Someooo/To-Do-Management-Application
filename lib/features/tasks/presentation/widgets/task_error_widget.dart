@@ -21,10 +21,12 @@ class TaskErrorWidget extends StatelessWidget {
     final buttonFg = Theme.of(context).colorScheme.onPrimary;
 
     return Center(
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 32),
+      child: SingleChildScrollView(
+        physics: const BouncingScrollPhysics(),
+        padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 24),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisSize: MainAxisSize.min,
           children: [
             Container(
               padding: const EdgeInsets.all(16),

@@ -202,6 +202,7 @@ class _HomePageContent extends StatelessWidget {
                                 physics: AlwaysScrollableScrollPhysics(),
                                 slivers: [
                                   SliverFillRemaining(
+                                    hasScrollBody: false,
                                     child: EmptyTasksWidget(),
                                   ),
                                 ],

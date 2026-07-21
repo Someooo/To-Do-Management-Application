@@ -12,10 +12,12 @@ class EmptyTasksWidget extends StatelessWidget {
     final secondaryTextColor = Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6);
 
     return Center(
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 32),
+      child: SingleChildScrollView(
+        physics: const BouncingScrollPhysics(),
+        padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 24),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisSize: MainAxisSize.min,
           children: [
             Container(
               padding: const EdgeInsets.all(20),
