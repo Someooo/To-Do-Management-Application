@@ -45,6 +45,11 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
     TaskRefreshed event,
     Emitter<TaskState> emit,
   ) async {
+    _currentStatusFilter = null;
+    _currentPriorityFilter = null;
+    _currentSearchQuery = '';
+    _currentSortOption = TaskSortOption.none;
+
     await _tasksSubscription?.cancel();
     _tasksSubscription = getTasksUseCase().listen(
       (tasks) => add(TasksUpdatedInternal(tasks)),
