@@ -196,18 +196,54 @@ class TaskCardWidget extends StatelessWidget {
         break;
     }
 
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-      decoration: BoxDecoration(
-        color: bg,
-        borderRadius: BorderRadius.circular(8),
-      ),
-      child: Text(
-        label,
-        style: TextStyle(
-          fontSize: 12,
-          fontWeight: FontWeight.w600,
-          color: fg,
+    return PopupMenuButton<TaskStatus>(
+      tooltip: 'Change Status',
+      onSelected: (TaskStatus newStatus) {
+        if (newStatus != status) {
+          final updatedTask = TaskEntity(
+            id: task.id,
+            title: task.title,
+            description: task.description,
+            priority: task.priority,
+            status: newStatus,
+            dueDate: task.dueDate,
+            createdAt: task.createdAt,
+            updatedAt: task.updatedAt,
+          );
+          context.read<TaskBloc>().add(TaskUpdated(updatedTask));
+        }
+      },
+      itemBuilder: (context) => TaskStatus.values.map((s) {
+        String text;
+        switch (s) {
+          case TaskStatus.todo:
+            text = 'To Do';
+            break;
+          case TaskStatus.inProgress:
+            text = 'In Progress';
+            break;
+          case TaskStatus.completed:
+            text = 'Completed';
+            break;
+        }
+        return PopupMenuItem<TaskStatus>(
+          value: s,
+          child: Text(text),
+        );
+      }).toList(),
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+        decoration: BoxDecoration(
+          color: bg,
+          borderRadius: BorderRadius.circular(8),
+        ),
+        child: Text(
+          label,
+          style: TextStyle(
+            fontSize: 12,
+            fontWeight: FontWeight.w600,
+            color: fg,
+          ),
         ),
       ),
     );
