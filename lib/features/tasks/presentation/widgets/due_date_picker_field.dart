@@ -13,12 +13,16 @@ class DueDatePickerField extends StatelessWidget {
 
   Future<void> _pickDate(BuildContext context) async {
     final now = DateTime.now();
-    final initial = selectedDate ?? now;
+    final today = DateTime(now.year, now.month, now.day);
+    final initial = (selectedDate == null || selectedDate!.isBefore(today))
+        ? today
+        : selectedDate!;
+
     final picked = await showDatePicker(
       context: context,
       initialDate: initial,
-      firstDate: DateTime(2000),
-      lastDate: DateTime(2100),
+      firstDate: today,
+      lastDate: DateTime(today.year + 100),
       builder: (context, child) {
         return Theme(
           data: Theme.of(context).copyWith(
@@ -72,6 +76,16 @@ class DueDatePickerField extends StatelessWidget {
           validator: (value) {
             if (selectedDate == null || (value == null || value.isEmpty)) {
               return 'Please select a due date';
+            }
+            final now = DateTime.now();
+            final today = DateTime(now.year, now.month, now.day);
+            final compareDate = DateTime(
+              selectedDate!.year,
+              selectedDate!.month,
+              selectedDate!.day,
+            );
+            if (compareDate.isBefore(today)) {
+              return 'Due date cannot be in the past.';
             }
             return null;
           },
