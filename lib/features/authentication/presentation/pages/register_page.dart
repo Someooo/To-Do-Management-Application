@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:my_template/config/app_routes.dart';
 import 'package:my_template/core/utils/app_snack_bar.dart';
+import 'package:my_template/core/utils/validators.dart';
 import 'package:my_template/di.dart';
 
 import '../bloc/auth_bloc.dart';
@@ -33,6 +34,7 @@ class _RegisterPageContent extends StatefulWidget {
 }
 
 class _RegisterPageContentState extends State<_RegisterPageContent> {
+  final _formKey = GlobalKey<FormState>();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   final _confirmPasswordController = TextEditingController();
@@ -46,29 +48,12 @@ class _RegisterPageContentState extends State<_RegisterPageContent> {
   }
 
   void _onRegisterPressed() {
+    if (!(_formKey.currentState?.validate() ?? false)) {
+      return;
+    }
+
     final email = _emailController.text.trim();
     final password = _passwordController.text.trim();
-    final confirmPassword = _confirmPasswordController.text.trim();
-
-    if (email.isEmpty) {
-      AppSnackBar.showError(context, 'Please enter your email address');
-      return;
-    }
-
-    if (password.isEmpty) {
-      AppSnackBar.showError(context, 'Please enter your password');
-      return;
-    }
-
-    if (confirmPassword.isEmpty) {
-      AppSnackBar.showError(context, 'Please confirm your password');
-      return;
-    }
-
-    if (password != confirmPassword) {
-      AppSnackBar.showError(context, 'Passwords do not match');
-      return;
-    }
 
     context.read<AuthBloc>().add(
           AuthRegisterRequested(
@@ -99,44 +84,53 @@ class _RegisterPageContentState extends State<_RegisterPageContent> {
 
             return SingleChildScrollView(
               padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  const LoginHeader(
-                    title: 'Create Account',
-                    subtitle: 'Sign up to get started',
-                  ),
-                  const SizedBox(height: 32),
-                  EmailTextField(
-                    controller: _emailController,
-                  ),
-                  const SizedBox(height: 16),
-                  PasswordTextField(
-                    label: 'Password',
-                    controller: _passwordController,
-                  ),
-                  const SizedBox(height: 16),
-                  PasswordTextField(
-                    label: 'Confirm Password',
-                    controller: _confirmPasswordController,
-                  ),
-                  const SizedBox(height: 24),
-                  LoginButton(
-                    label: 'Register',
-                    isLoading: isLoading,
-                    onPressed: isLoading ? null : _onRegisterPressed,
-                  ),
-                  const SizedBox(height: 32),
-                  SignupPromptWidget(
-                    promptText: 'Already have an account? ',
-                    actionText: 'Log in',
-                    onSignupPressed: () {
-                      Navigator.of(context)
-                          .pushReplacementNamed(AppRoutes.login);
-                    },
-                  ),
-                  const SizedBox(height: 16),
-                ],
+              child: Form(
+                key: _formKey,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    const LoginHeader(
+                      title: 'Create Account',
+                      subtitle: 'Sign up to get started',
+                    ),
+                    const SizedBox(height: 32),
+                    EmailTextField(
+                      controller: _emailController,
+                      validator: Validators.validateEmail,
+                    ),
+                    const SizedBox(height: 16),
+                    PasswordTextField(
+                      label: 'Password',
+                      controller: _passwordController,
+                      validator: Validators.validatePassword,
+                    ),
+                    const SizedBox(height: 16),
+                    PasswordTextField(
+                      label: 'Confirm Password',
+                      controller: _confirmPasswordController,
+                      validator: (value) => Validators.validateConfirmPassword(
+                        value,
+                        _passwordController.text,
+                      ),
+                    ),
+                    const SizedBox(height: 24),
+                    LoginButton(
+                      label: 'Register',
+                      isLoading: isLoading,
+                      onPressed: isLoading ? null : _onRegisterPressed,
+                    ),
+                    const SizedBox(height: 32),
+                    SignupPromptWidget(
+                      promptText: 'Already have an account? ',
+                      actionText: 'Log in',
+                      onSignupPressed: () {
+                        Navigator.of(context)
+                            .pushReplacementNamed(AppRoutes.login);
+                      },
+                    ),
+                    const SizedBox(height: 16),
+                  ],
+                ),
               ),
             );
           },

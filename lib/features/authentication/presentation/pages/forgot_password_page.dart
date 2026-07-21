@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:my_template/config/app_routes.dart';
 import 'package:my_template/core/utils/app_snack_bar.dart';
+import 'package:my_template/core/utils/validators.dart';
 import 'package:my_template/di.dart';
 
 import '../bloc/auth_bloc.dart';
@@ -32,11 +33,8 @@ class _ForgotPasswordPageContent extends StatefulWidget {
 
 class _ForgotPasswordPageContentState
     extends State<_ForgotPasswordPageContent> {
+  final _formKey = GlobalKey<FormState>();
   final _emailController = TextEditingController();
-
-  final RegExp _emailRegex = RegExp(
-    r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$',
-  );
 
   @override
   void dispose() {
@@ -46,19 +44,12 @@ class _ForgotPasswordPageContentState
 
   void _onSendResetLinkPressed() {
     debugPrint('📱 [ForgotPasswordPage] Send Reset Link button pressed');
+    if (!(_formKey.currentState?.validate() ?? false)) {
+      debugPrint('⚠️ [ForgotPasswordPage] Validation failed');
+      return;
+    }
+
     final email = _emailController.text.trim();
-
-    if (email.isEmpty) {
-      debugPrint('⚠️ [ForgotPasswordPage] Validation failed: Email is empty');
-      AppSnackBar.showError(context, 'Please enter your email address');
-      return;
-    }
-
-    if (!_emailRegex.hasMatch(email)) {
-      debugPrint('⚠️ [ForgotPasswordPage] Validation failed: Invalid email format');
-      AppSnackBar.showError(context, 'Please enter a valid email address');
-      return;
-    }
 
     debugPrint('📱 [ForgotPasswordPage] Validation passed for email: $email');
     context.read<AuthBloc>().add(
@@ -110,68 +101,72 @@ class _ForgotPasswordPageContentState
 
             return SingleChildScrollView(
               padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  const SizedBox(height: 16),
-                  const Icon(
-                    Icons.lock_reset_rounded,
-                    size: 64,
-                    color: primaryColor,
-                  ),
-                  const SizedBox(height: 24),
-                  const Text(
-                    'Forgot Password?',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontSize: 26,
-                      fontWeight: FontWeight.bold,
-                      color: Color(0xFF1A1C1F),
+              child: Form(
+                key: _formKey,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    const SizedBox(height: 16),
+                    const Icon(
+                      Icons.lock_reset_rounded,
+                      size: 64,
+                      color: primaryColor,
                     ),
-                  ),
-                  const SizedBox(height: 12),
-                  Text(
-                    'Enter your email address below and we will send you a link to reset your password.',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontSize: 14,
-                      color: Colors.grey.shade700,
-                      height: 1.4,
+                    const SizedBox(height: 24),
+                    const Text(
+                      'Forgot Password?',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: 26,
+                        fontWeight: FontWeight.bold,
+                        color: Color(0xFF1A1C1F),
+                      ),
                     ),
-                  ),
-                  const SizedBox(height: 32),
-                  EmailTextField(
-                    controller: _emailController,
-                  ),
-                  const SizedBox(height: 24),
-                  LoginButton(
-                    label: 'Send Reset Link',
-                    isLoading: isLoading,
-                    onPressed: isLoading ? null : _onSendResetLinkPressed,
-                  ),
-                  const SizedBox(height: 24),
-                  Center(
-                    child: GestureDetector(
-                      onTap: () {
-                        if (Navigator.of(context).canPop()) {
-                          Navigator.of(context).pop();
-                        } else {
-                          Navigator.of(context)
-                              .pushReplacementNamed(AppRoutes.login);
-                        }
-                      },
-                      child: const Text(
-                        'Back to Login',
-                        style: TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w600,
-                          color: primaryColor,
+                    const SizedBox(height: 12),
+                    Text(
+                      'Enter your email address below and we will send you a link to reset your password.',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: 14,
+                        color: Colors.grey.shade700,
+                        height: 1.4,
+                      ),
+                    ),
+                    const SizedBox(height: 32),
+                    EmailTextField(
+                      controller: _emailController,
+                      validator: Validators.validateEmail,
+                    ),
+                    const SizedBox(height: 24),
+                    LoginButton(
+                      label: 'Send Reset Link',
+                      isLoading: isLoading,
+                      onPressed: isLoading ? null : _onSendResetLinkPressed,
+                    ),
+                    const SizedBox(height: 24),
+                    Center(
+                      child: GestureDetector(
+                        onTap: () {
+                          if (Navigator.of(context).canPop()) {
+                            Navigator.of(context).pop();
+                          } else {
+                            Navigator.of(context)
+                                .pushReplacementNamed(AppRoutes.login);
+                          }
+                        },
+                        child: const Text(
+                          'Back to Login',
+                          style: TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w600,
+                            color: primaryColor,
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                  const SizedBox(height: 16),
-                ],
+                    const SizedBox(height: 16),
+                  ],
+                ),
               ),
             );
           },

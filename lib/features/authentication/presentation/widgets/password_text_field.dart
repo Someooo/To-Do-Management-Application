@@ -6,6 +6,8 @@ class PasswordTextField extends StatelessWidget {
   final String hintText;
   final TextEditingController? controller;
   final ValueChanged<String>? onChanged;
+  final String? Function(String?)? validator;
+  final AutovalidateMode? autovalidateMode;
 
   const PasswordTextField({
     super.key,
@@ -13,6 +15,8 @@ class PasswordTextField extends StatelessWidget {
     this.hintText = '••••••••',
     this.controller,
     this.onChanged,
+    this.validator,
+    this.autovalidateMode,
   });
 
   @override
@@ -24,6 +28,8 @@ class PasswordTextField extends StatelessWidget {
       isPassword: true,
       controller: controller,
       onChanged: onChanged,
+      validator: validator,
+      autovalidateMode: autovalidateMode,
     );
   }
 }

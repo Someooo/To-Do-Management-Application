@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:my_template/config/app_routes.dart';
 import 'package:my_template/core/utils/app_snack_bar.dart';
+import 'package:my_template/core/utils/validators.dart';
 import 'package:my_template/di.dart';
 
 import '../bloc/auth_bloc.dart';
@@ -33,6 +34,7 @@ class _LoginPageContent extends StatefulWidget {
 }
 
 class _LoginPageContentState extends State<_LoginPageContent> {
+  final _formKey = GlobalKey<FormState>();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
 
@@ -45,20 +47,13 @@ class _LoginPageContentState extends State<_LoginPageContent> {
 
   void _onLoginPressed() {
     debugPrint('📱 [LoginPage] Login button pressed');
+    if (!(_formKey.currentState?.validate() ?? false)) {
+      debugPrint('⚠️ [LoginPage] Validation failed');
+      return;
+    }
+
     final email = _emailController.text.trim();
     final password = _passwordController.text.trim();
-
-    if (email.isEmpty) {
-      debugPrint('⚠️ [LoginPage] Validation failed: Email is empty');
-      AppSnackBar.showError(context, 'Please enter your email address');
-      return;
-    }
-
-    if (password.isEmpty) {
-      debugPrint('⚠️ [LoginPage] Validation failed: Password is empty');
-      AppSnackBar.showError(context, 'Please enter your password');
-      return;
-    }
 
     debugPrint('📱 [LoginPage] Validation passed for email: $email');
     context.read<AuthBloc>().add(
@@ -97,55 +92,60 @@ class _LoginPageContentState extends State<_LoginPageContent> {
 
             return SingleChildScrollView(
               padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  const LoginHeader(),
-                  const SizedBox(height: 32),
-                  EmailTextField(
-                    controller: _emailController,
-                  ),
-                  const SizedBox(height: 16),
-                  PasswordTextField(
-                    controller: _passwordController,
-                  ),
-                  const SizedBox(height: 8),
-                  Align(
-                    alignment: Alignment.centerRight,
-                    child: TextButton(
-                      onPressed: () {
-                        Navigator.of(context)
-                            .pushNamed(AppRoutes.forgotPassword);
-                      },
-                      style: TextButton.styleFrom(
-                        padding: EdgeInsets.zero,
-                        minimumSize: Size.zero,
-                        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                      ),
-                      child: const Text(
-                        'Forgot password?',
-                        style: TextStyle(
-                          fontSize: 13,
-                          fontWeight: FontWeight.w600,
-                          color: Color(0xFF0060A9),
+              child: Form(
+                key: _formKey,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    const LoginHeader(),
+                    const SizedBox(height: 32),
+                    EmailTextField(
+                      controller: _emailController,
+                      validator: Validators.validateEmail,
+                    ),
+                    const SizedBox(height: 16),
+                    PasswordTextField(
+                      controller: _passwordController,
+                      validator: Validators.validatePassword,
+                    ),
+                    const SizedBox(height: 8),
+                    Align(
+                      alignment: Alignment.centerRight,
+                      child: TextButton(
+                        onPressed: () {
+                          Navigator.of(context)
+                              .pushNamed(AppRoutes.forgotPassword);
+                        },
+                        style: TextButton.styleFrom(
+                          padding: EdgeInsets.zero,
+                          minimumSize: Size.zero,
+                          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                        ),
+                        child: const Text(
+                          'Forgot password?',
+                          style: TextStyle(
+                            fontSize: 13,
+                            fontWeight: FontWeight.w600,
+                            color: Color(0xFF0060A9),
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                  const SizedBox(height: 20),
-                  LoginButton(
-                    isLoading: isLoading,
-                    onPressed: isLoading ? null : _onLoginPressed,
-                  ),
-                  const SizedBox(height: 32),
-                  SignupPromptWidget(
-                    onSignupPressed: () {
-                      Navigator.of(context)
-                          .pushReplacementNamed(AppRoutes.register);
-                    },
-                  ),
-                  const SizedBox(height: 16),
-                ],
+                    const SizedBox(height: 20),
+                    LoginButton(
+                      isLoading: isLoading,
+                      onPressed: isLoading ? null : _onLoginPressed,
+                    ),
+                    const SizedBox(height: 32),
+                    SignupPromptWidget(
+                      onSignupPressed: () {
+                        Navigator.of(context)
+                            .pushReplacementNamed(AppRoutes.register);
+                      },
+                    ),
+                    const SizedBox(height: 16),
+                  ],
+                ),
               ),
             );
           },
