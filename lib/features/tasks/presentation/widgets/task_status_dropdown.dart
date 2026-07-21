@@ -14,7 +14,7 @@ class TaskStatusDropdown extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     const labelColor = Color(0xFF404752);
-    const inputBgColor = Color(0xFFF3F3F7);
+    const inputBgColor = Colors.white;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -34,6 +34,8 @@ class TaskStatusDropdown extends StatelessWidget {
         DropdownButtonFormField<TaskStatus>(
           initialValue: value,
           onChanged: onChanged,
+          isExpanded: true,
+          dropdownColor: Colors.white,
           icon: const Icon(Icons.arrow_drop_down_rounded, color: labelColor),
           style: const TextStyle(
             fontSize: 15,
@@ -60,22 +62,22 @@ class TaskStatusDropdown extends StatelessWidget {
               borderSide: BorderSide.none,
             ),
             contentPadding: const EdgeInsets.symmetric(
-              horizontal: 16,
+              horizontal: 12,
               vertical: 16,
             ),
           ),
           items: const [
             DropdownMenuItem(
               value: TaskStatus.todo,
-              child: Text('To Do'),
+              child: Text('To Do', overflow: TextOverflow.ellipsis),
             ),
             DropdownMenuItem(
               value: TaskStatus.inProgress,
-              child: Text('In Progress'),
+              child: Text('In Progress', overflow: TextOverflow.ellipsis),
             ),
             DropdownMenuItem(
               value: TaskStatus.completed,
-              child: Text('Completed'),
+              child: Text('Completed', overflow: TextOverflow.ellipsis),
             ),
           ],
         ),

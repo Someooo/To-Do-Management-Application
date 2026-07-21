@@ -14,7 +14,7 @@ class TaskPriorityDropdown extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     const labelColor = Color(0xFF404752);
-    const inputBgColor = Color(0xFFF3F3F7);
+    const inputBgColor = Colors.white;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -34,6 +34,8 @@ class TaskPriorityDropdown extends StatelessWidget {
         DropdownButtonFormField<TaskPriority>(
           initialValue: value,
           onChanged: onChanged,
+          isExpanded: true,
+          dropdownColor: Colors.white,
           icon: const Icon(Icons.arrow_drop_down_rounded, color: labelColor),
           style: const TextStyle(
             fontSize: 15,
@@ -60,22 +62,22 @@ class TaskPriorityDropdown extends StatelessWidget {
               borderSide: BorderSide.none,
             ),
             contentPadding: const EdgeInsets.symmetric(
-              horizontal: 16,
+              horizontal: 12,
               vertical: 16,
             ),
           ),
           items: const [
             DropdownMenuItem(
               value: TaskPriority.low,
-              child: Text('Low Priority'),
+              child: Text('Low Priority', overflow: TextOverflow.ellipsis),
             ),
             DropdownMenuItem(
               value: TaskPriority.medium,
-              child: Text('Medium Priority'),
+              child: Text('Medium Priority', overflow: TextOverflow.ellipsis),
             ),
             DropdownMenuItem(
               value: TaskPriority.high,
-              child: Text('High Priority'),
+              child: Text('High Priority', overflow: TextOverflow.ellipsis),
             ),
           ],
         ),
