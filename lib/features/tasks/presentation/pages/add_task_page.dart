@@ -60,17 +60,26 @@ class _AddTaskPageContentState extends State<_AddTaskPageContent> {
               AppSnackBar.showError(context, state.message);
             }
           },
-          child: SingleChildScrollView(
-            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-            child: TaskFormWidget(
-              isLoading: _isSubmitting,
-              onCancel: () => Navigator.of(context).pop(),
-              onSubmit: (task) {
-                setState(() => _isSubmitting = true);
-                context.read<TaskBloc>().add(TaskAdded(task));
-                AppSnackBar.showSuccess(context, 'Task created successfully.');
-                Navigator.of(context).pop();
-              },
+          child: Align(
+            alignment: Alignment.topCenter,
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 640),
+              child: SingleChildScrollView(
+                physics: const BouncingScrollPhysics(),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+                child: TaskFormWidget(
+                  isLoading: _isSubmitting,
+                  onCancel: () => Navigator.of(context).pop(),
+                  onSubmit: (task) {
+                    setState(() => _isSubmitting = true);
+                    context.read<TaskBloc>().add(TaskAdded(task));
+                    AppSnackBar.showSuccess(
+                        context, 'Task created successfully.');
+                    Navigator.of(context).pop();
+                  },
+                ),
+              ),
             ),
           ),
         ),

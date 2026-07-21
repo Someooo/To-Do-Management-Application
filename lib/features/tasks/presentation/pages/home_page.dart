@@ -60,105 +60,113 @@ class _HomePageContent extends StatelessWidget {
       child: Scaffold(
         backgroundColor: bgColor,
         body: SafeArea(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Padding(
-                padding: const EdgeInsets.fromLTRB(20, 16, 20, 0),
-                child: BlocBuilder<TaskBloc, TaskState>(
-                  buildWhen: (previous, current) =>
-                      current is TaskLoaded || current is TaskInitial,
-                  builder: (context, state) {
-                    final taskCount =
-                        state is TaskLoaded ? state.allTasks.length : 0;
-                    return HomeHeaderWidget(taskCount: taskCount);
-                  },
-                ),
-              ),
-              const SizedBox(height: 16),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
-                child: BlocBuilder<TaskBloc, TaskState>(
-                  builder: (context, state) {
-                    final statusFilter =
-                        state is TaskLoaded ? state.statusFilter : null;
-                    final priorityFilter =
-                        state is TaskLoaded ? state.priorityFilter : null;
-
-                    return TaskFilterWidget(
-                      selectedStatus: statusFilter,
-                      selectedPriority: priorityFilter,
-                      onStatusChanged: (newStatus) {
-                        context.read<TaskBloc>().add(
-                              TaskFilterChanged(
-                                statusFilter: newStatus,
-                                priorityFilter: priorityFilter,
-                              ),
-                            );
+          child: Align(
+            alignment: Alignment.topCenter,
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 800),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(20, 16, 20, 0),
+                    child: BlocBuilder<TaskBloc, TaskState>(
+                      buildWhen: (previous, current) =>
+                          current is TaskLoaded || current is TaskInitial,
+                      builder: (context, state) {
+                        final taskCount =
+                            state is TaskLoaded ? state.allTasks.length : 0;
+                        return HomeHeaderWidget(taskCount: taskCount);
                       },
-                      onPriorityChanged: (newPriority) {
-                        context.read<TaskBloc>().add(
-                              TaskFilterChanged(
-                                statusFilter: statusFilter,
-                                priorityFilter: newPriority,
-                              ),
-                            );
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    child: BlocBuilder<TaskBloc, TaskState>(
+                      builder: (context, state) {
+                        final statusFilter =
+                            state is TaskLoaded ? state.statusFilter : null;
+                        final priorityFilter =
+                            state is TaskLoaded ? state.priorityFilter : null;
+
+                        return TaskFilterWidget(
+                          selectedStatus: statusFilter,
+                          selectedPriority: priorityFilter,
+                          onStatusChanged: (newStatus) {
+                            context.read<TaskBloc>().add(
+                                  TaskFilterChanged(
+                                    statusFilter: newStatus,
+                                    priorityFilter: priorityFilter,
+                                  ),
+                                );
+                          },
+                          onPriorityChanged: (newPriority) {
+                            context.read<TaskBloc>().add(
+                                  TaskFilterChanged(
+                                    statusFilter: statusFilter,
+                                    priorityFilter: newPriority,
+                                  ),
+                                );
+                          },
+                        );
                       },
-                    );
-                  },
-                ),
-              ),
-              const SizedBox(height: 12),
-              Expanded(
-                child: BlocBuilder<TaskBloc, TaskState>(
-                  builder: (context, state) {
-                    if (state is TaskInitial || state is TaskLoading) {
-                      return const TaskLoadingWidget();
-                    }
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  Expanded(
+                    child: BlocBuilder<TaskBloc, TaskState>(
+                      builder: (context, state) {
+                        if (state is TaskInitial || state is TaskLoading) {
+                          return const TaskLoadingWidget();
+                        }
 
-                    if (state is TaskFailure) {
-                      return TaskErrorWidget(
-                        message: state.message,
-                        onRetry: () {
-                          context
-                              .read<TaskBloc>()
-                              .add(const TaskSubscriptionRequested());
-                        },
-                      );
-                    }
-
-                    if (state is TaskLoaded) {
-                      if (state.tasks.isEmpty) {
-                        return const EmptyTasksWidget();
-                      }
-                      return TaskListWidget(
-                        tasks: state.tasks,
-                        onEditTask: (task) {
-                          Navigator.of(context).push(
-                            MaterialPageRoute(
-                              builder: (_) => EditTaskPage(task: task),
-                            ),
+                        if (state is TaskFailure) {
+                          return TaskErrorWidget(
+                            message: state.message,
+                            onRetry: () {
+                              context
+                                  .read<TaskBloc>()
+                                  .add(const TaskSubscriptionRequested());
+                            },
                           );
-                        },
-                        onDeleteTask: (task) async {
-                          final confirmed =
-                              await DeleteTaskDialog.show(context);
-                          if (confirmed == true && context.mounted) {
-                            context.read<TaskBloc>().add(TaskDeleted(task.id));
-                            AppSnackBar.showSuccess(
-                              context,
-                              'Task deleted successfully.',
-                            );
-                          }
-                        },
-                      );
-                    }
+                        }
 
-                    return const TaskLoadingWidget();
-                  },
-                ),
+                        if (state is TaskLoaded) {
+                          if (state.tasks.isEmpty) {
+                            return const EmptyTasksWidget();
+                          }
+                          return TaskListWidget(
+                            tasks: state.tasks,
+                            onEditTask: (task) {
+                              Navigator.of(context).push(
+                                MaterialPageRoute(
+                                  builder: (_) => EditTaskPage(task: task),
+                                ),
+                              );
+                            },
+                            onDeleteTask: (task) async {
+                              final confirmed =
+                                  await DeleteTaskDialog.show(context);
+                              if (confirmed == true && context.mounted) {
+                                context
+                                    .read<TaskBloc>()
+                                    .add(TaskDeleted(task.id));
+                                AppSnackBar.showSuccess(
+                                  context,
+                                  'Task deleted successfully.',
+                                );
+                              }
+                            },
+                          );
+                        }
+
+                        return const TaskLoadingWidget();
+                      },
+                    ),
+                  ),
+                ],
               ),
-            ],
+            ),
           ),
         ),
         floatingActionButton: FloatingActionButton(

@@ -68,19 +68,28 @@ class _EditTaskPageContentState extends State<_EditTaskPageContent> {
               AppSnackBar.showError(context, state.message);
             }
           },
-          child: SingleChildScrollView(
-            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-            child: TaskFormWidget(
-              initialTask: widget.task,
-              submitButtonLabel: 'Update Task',
-              isLoading: _isSubmitting,
-              onCancel: () => Navigator.of(context).pop(),
-              onSubmit: (updatedTask) {
-                setState(() => _isSubmitting = true);
-                context.read<TaskBloc>().add(TaskUpdated(updatedTask));
-                AppSnackBar.showSuccess(context, 'Task updated successfully.');
-                Navigator.of(context).pop();
-              },
+          child: Align(
+            alignment: Alignment.topCenter,
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 640),
+              child: SingleChildScrollView(
+                physics: const BouncingScrollPhysics(),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+                child: TaskFormWidget(
+                  initialTask: widget.task,
+                  submitButtonLabel: 'Update Task',
+                  isLoading: _isSubmitting,
+                  onCancel: () => Navigator.of(context).pop(),
+                  onSubmit: (updatedTask) {
+                    setState(() => _isSubmitting = true);
+                    context.read<TaskBloc>().add(TaskUpdated(updatedTask));
+                    AppSnackBar.showSuccess(
+                        context, 'Task updated successfully.');
+                    Navigator.of(context).pop();
+                  },
+                ),
+              ),
             ),
           ),
         ),

@@ -30,7 +30,7 @@ class _TaskFormWidgetState extends State<TaskFormWidget> {
   late final TextEditingController _titleController;
   late final TextEditingController _descriptionController;
 
-  TaskPriority _priority = TaskPriority.medium;
+  TaskPriority _priority = TaskPriority.low;
   TaskStatus _status = TaskStatus.todo;
   DateTime? _dueDate;
 
@@ -205,26 +205,51 @@ class _TaskFormWidgetState extends State<TaskFormWidget> {
           ),
           const SizedBox(height: 16),
 
-          Row(
-            children: [
-              Expanded(
-                child: TaskPriorityDropdown(
-                  value: _priority,
-                  onChanged: (val) {
-                    if (val != null) setState(() => _priority = val);
-                  },
-                ),
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: TaskStatusDropdown(
-                  value: _status,
-                  onChanged: (val) {
-                    if (val != null) setState(() => _status = val);
-                  },
-                ),
-              ),
-            ],
+          LayoutBuilder(
+            builder: (context, constraints) {
+              final isNarrow = constraints.maxWidth < 360;
+              if (isNarrow) {
+                return Column(
+                  children: [
+                    TaskPriorityDropdown(
+                      value: _priority,
+                      onChanged: (val) {
+                        if (val != null) setState(() => _priority = val);
+                      },
+                    ),
+                    const SizedBox(height: 16),
+                    TaskStatusDropdown(
+                      value: _status,
+                      onChanged: (val) {
+                        if (val != null) setState(() => _status = val);
+                      },
+                    ),
+                  ],
+                );
+              }
+
+              return Row(
+                children: [
+                  Expanded(
+                    child: TaskPriorityDropdown(
+                      value: _priority,
+                      onChanged: (val) {
+                        if (val != null) setState(() => _priority = val);
+                      },
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: TaskStatusDropdown(
+                      value: _status,
+                      onChanged: (val) {
+                        if (val != null) setState(() => _status = val);
+                      },
+                    ),
+                  ),
+                ],
+              );
+            },
           ),
           const SizedBox(height: 16),
 
