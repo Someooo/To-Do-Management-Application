@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:my_template/features/tasks/presentation/bloc/task_event.dart';
 import '../../domain/entities/task_entity.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import '../bloc/task_bloc.dart';
 
 class TaskCardWidget extends StatelessWidget {
   final TaskEntity task;
@@ -19,7 +22,8 @@ class TaskCardWidget extends StatelessWidget {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final cardBgColor = isDark ? const Color(0xFF1F2937) : Colors.white;
     final textColor = Theme.of(context).colorScheme.onSurface;
-    final secondaryTextColor = Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6);
+    final secondaryTextColor =
+        Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6);
 
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
@@ -64,7 +68,9 @@ class TaskCardWidget extends StatelessWidget {
                       child: Icon(
                         Icons.edit_outlined,
                         size: 18,
-                        color: isDark ? const Color(0xFF60A5FA) : const Color(0xFF0060A9),
+                        color: isDark
+                            ? const Color(0xFF60A5FA)
+                            : const Color(0xFF0060A9),
                       ),
                     ),
                   ),
@@ -79,7 +85,8 @@ class TaskCardWidget extends StatelessWidget {
                       child: Icon(
                         Icons.delete_outline_rounded,
                         size: 18,
-                        color: isDark ? Colors.red.shade400 : Colors.red.shade600,
+                        color:
+                            isDark ? Colors.red.shade400 : Colors.red.shade600,
                       ),
                     ),
                   ),
@@ -144,12 +151,16 @@ class TaskCardWidget extends StatelessWidget {
         label = 'High';
         break;
       case TaskPriority.medium:
-        bg = isDark ? Colors.orange.withValues(alpha: 0.15) : Colors.orange.shade50;
+        bg = isDark
+            ? Colors.orange.withValues(alpha: 0.15)
+            : Colors.orange.shade50;
         fg = isDark ? Colors.orange.shade300 : Colors.orange.shade800;
         label = 'Medium';
         break;
       case TaskPriority.low:
-        bg = isDark ? Colors.green.withValues(alpha: 0.15) : Colors.green.shade50;
+        bg = isDark
+            ? Colors.green.withValues(alpha: 0.15)
+            : Colors.green.shade50;
         fg = isDark ? Colors.green.shade300 : Colors.green.shade700;
         label = 'Low';
         break;
@@ -180,12 +191,16 @@ class TaskCardWidget extends StatelessWidget {
 
     switch (status) {
       case TaskStatus.todo:
-        bg = isDark ? const Color(0xFF0060A9).withValues(alpha: 0.2) : const Color(0xFFE8F1FF);
+        bg = isDark
+            ? const Color(0xFF0060A9).withValues(alpha: 0.2)
+            : const Color(0xFFE8F1FF);
         fg = isDark ? const Color(0xFF60A5FA) : const Color(0xFF0060A9);
         label = 'To Do';
         break;
       case TaskStatus.inProgress:
-        bg = isDark ? Colors.purple.withValues(alpha: 0.15) : Colors.purple.shade50;
+        bg = isDark
+            ? Colors.purple.withValues(alpha: 0.15)
+            : Colors.purple.shade50;
         fg = isDark ? Colors.purple.shade300 : Colors.purple.shade700;
         label = 'In Progress';
         break;
@@ -237,13 +252,24 @@ class TaskCardWidget extends StatelessWidget {
           color: bg,
           borderRadius: BorderRadius.circular(8),
         ),
-        child: Text(
-          label,
-          style: TextStyle(
-            fontSize: 12,
-            fontWeight: FontWeight.w600,
-            color: fg,
-          ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              label,
+              style: TextStyle(
+                fontSize: 12,
+                fontWeight: FontWeight.w600,
+                color: fg,
+              ),
+            ),
+            const SizedBox(width: 4),
+            Icon(
+              Icons.arrow_drop_down_rounded,
+              size: 16,
+              color: fg,
+            ),
+          ],
         ),
       ),
     );

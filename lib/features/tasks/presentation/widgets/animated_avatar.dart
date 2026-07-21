@@ -22,7 +22,7 @@ class _AnimatedAvatarState extends State<AnimatedAvatar>
   @override
   void initState() {
     super.initState();
-    // Duration of a full pulse (scale up + down).
+
     _controller = AnimationController(
       vsync: this,
       duration: const Duration(seconds: 2),
@@ -31,7 +31,7 @@ class _AnimatedAvatarState extends State<AnimatedAvatar>
     _scaleAnimation = Tween<double>(begin: 1.0, end: 1.07).animate(curved);
     _blurAnimation = Tween<double>(begin: 8.0, end: 15.0).animate(curved);
 
-    // Loop the animation back‑and‑forth.
+
     _controller.addStatusListener((status) {
       if (status == AnimationStatus.completed) {
         _controller.reverse();
@@ -39,7 +39,7 @@ class _AnimatedAvatarState extends State<AnimatedAvatar>
         _controller.forward();
       }
     });
-    // Start the pulse after the first frame to avoid visible jump.
+
     SchedulerBinding.instance.addPostFrameCallback((_) => _controller.forward());
   }
 
