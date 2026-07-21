@@ -60,3 +60,17 @@ class TaskErrorInternal extends TaskEvent {
   @override
   List<Object?> get props => [message];
 }
+
+class TaskFilterChanged extends TaskEvent {
+  final TaskStatus? statusFilter;
+  final TaskPriority? priorityFilter;
+
+  const TaskFilterChanged({
+    this.statusFilter,
+    this.priorityFilter,
+  });
+
+  @override
+  List<Object?> get props => [statusFilter, priorityFilter];
+}
+

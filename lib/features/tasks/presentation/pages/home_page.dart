@@ -12,7 +12,9 @@ import '../bloc/task_state.dart';
 import 'edit_task_page.dart';
 import '../widgets/delete_task_dialog.dart';
 import '../widgets/empty_tasks_widget.dart';
+import '../widgets/home_header_widget.dart';
 import '../widgets/task_error_widget.dart';
+import '../widgets/task_filter_widget.dart';
 import '../widgets/task_list_widget.dart';
 import '../widgets/task_loading_widget.dart';
 
@@ -24,7 +26,8 @@ class HomePage extends StatelessWidget {
     return MultiBlocProvider(
       providers: [
         BlocProvider<AuthBloc>(
-          create: (context) => getIt<AuthBloc>(),
+          create: (context) =>
+              getIt<AuthBloc>()..add(const AuthCheckRequested()),
         ),
         BlocProvider<TaskBloc>(
           create: (context) => getIt<TaskBloc>()..add(const TaskStarted()),
@@ -50,83 +53,115 @@ class _HomePageContent extends StatelessWidget {
       },
       child: Scaffold(
         backgroundColor: bgColor,
-        appBar: AppBar(
-          backgroundColor: bgColor,
-          elevation: 0,
-          scrolledUnderElevation: 0,
-          title: const Text(
-            'TaskFlow',
-            style: TextStyle(
-              fontSize: 22,
-              fontWeight: FontWeight.bold,
-              color: Color(0xFF1A1C1F),
-            ),
-          ),
-          actions: [
-            IconButton(
-              icon: const Icon(Icons.logout_rounded, color: Color(0xFF1A1C1F)),
-              tooltip: 'Logout',
-              onPressed: () {
-                context.read<AuthBloc>().add(const AuthLogoutRequested());
-              },
-            ),
-            const SizedBox(width: 8),
-          ],
-        ),
         body: SafeArea(
-          child: BlocBuilder<TaskBloc, TaskState>(
-            builder: (context, state) {
-              if (state is TaskInitial || state is TaskLoading) {
-                return const TaskLoadingWidget();
-              }
-
-              if (state is TaskFailure) {
-                return TaskErrorWidget(
-                  message: state.message,
-                  onRetry: () {
-                    context
-                        .read<TaskBloc>()
-                        .add(const TaskSubscriptionRequested());
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding: const EdgeInsets.fromLTRB(20, 16, 20, 0),
+                child: BlocBuilder<TaskBloc, TaskState>(
+                  buildWhen: (previous, current) =>
+                      current is TaskLoaded || current is TaskInitial,
+                  builder: (context, state) {
+                    final taskCount =
+                        state is TaskLoaded ? state.allTasks.length : 0;
+                    return HomeHeaderWidget(taskCount: taskCount);
                   },
-                );
-              }
+                ),
+              ),
+              const SizedBox(height: 16),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: BlocBuilder<TaskBloc, TaskState>(
+                  builder: (context, state) {
+                    final statusFilter =
+                        state is TaskLoaded ? state.statusFilter : null;
+                    final priorityFilter =
+                        state is TaskLoaded ? state.priorityFilter : null;
 
-              if (state is TaskLoaded) {
-                if (state.tasks.isEmpty) {
-                  return const EmptyTasksWidget();
-                }
-                return TaskListWidget(
-                  tasks: state.tasks,
-                  onEditTask: (task) {
-                    Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (_) => EditTaskPage(task: task),
-                      ),
+                    return TaskFilterWidget(
+                      selectedStatus: statusFilter,
+                      selectedPriority: priorityFilter,
+                      onStatusChanged: (newStatus) {
+                        context.read<TaskBloc>().add(
+                              TaskFilterChanged(
+                                statusFilter: newStatus,
+                                priorityFilter: priorityFilter,
+                              ),
+                            );
+                      },
+                      onPriorityChanged: (newPriority) {
+                        context.read<TaskBloc>().add(
+                              TaskFilterChanged(
+                                statusFilter: statusFilter,
+                                priorityFilter: newPriority,
+                              ),
+                            );
+                      },
                     );
                   },
-                  onDeleteTask: (task) async {
-                    final confirmed = await DeleteTaskDialog.show(context);
-                    if (confirmed == true && context.mounted) {
-                      context.read<TaskBloc>().add(TaskDeleted(task.id));
-                      AppSnackBar.showSuccess(
-                        context,
-                        'Task deleted successfully.',
+                ),
+              ),
+              const SizedBox(height: 12),
+              Expanded(
+                child: BlocBuilder<TaskBloc, TaskState>(
+                  builder: (context, state) {
+                    if (state is TaskInitial || state is TaskLoading) {
+                      return const TaskLoadingWidget();
+                    }
+
+                    if (state is TaskFailure) {
+                      return TaskErrorWidget(
+                        message: state.message,
+                        onRetry: () {
+                          context
+                              .read<TaskBloc>()
+                              .add(const TaskSubscriptionRequested());
+                        },
                       );
                     }
-                  },
-                );
-              }
 
-              return const TaskLoadingWidget();
-            },
+                    if (state is TaskLoaded) {
+                      if (state.tasks.isEmpty) {
+                        return const EmptyTasksWidget();
+                      }
+                      return TaskListWidget(
+                        tasks: state.tasks,
+                        onEditTask: (task) {
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (_) => EditTaskPage(task: task),
+                            ),
+                          );
+                        },
+                        onDeleteTask: (task) async {
+                          final confirmed =
+                              await DeleteTaskDialog.show(context);
+                          if (confirmed == true && context.mounted) {
+                            context.read<TaskBloc>().add(TaskDeleted(task.id));
+                            AppSnackBar.showSuccess(
+                              context,
+                              'Task deleted successfully.',
+                            );
+                          }
+                        },
+                      );
+                    }
+
+                    return const TaskLoadingWidget();
+                  },
+                ),
+              ),
+            ],
           ),
         ),
         floatingActionButton: FloatingActionButton(
           onPressed: () {
             Navigator.of(context).pushNamed(AppRoutes.addTask);
           },
-          backgroundColor: const Color(0xFF0060A9),
+          backgroundColor: const Color(0xFF3B82F6),
           foregroundColor: Colors.white,
+          elevation: 4,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(16),
           ),

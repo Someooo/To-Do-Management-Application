@@ -15,6 +15,9 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
   final DeleteTaskUseCase deleteTaskUseCase;
 
   StreamSubscription<List<TaskEntity>>? _tasksSubscription;
+  List<TaskEntity> _latestAllTasks = [];
+  TaskStatus? _currentStatusFilter;
+  TaskPriority? _currentPriorityFilter;
 
   TaskBloc({
     required this.getTasksUseCase,
@@ -29,6 +32,7 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
     on<TaskDeleted>(_onTaskDeleted);
     on<TasksUpdatedInternal>(_onTasksUpdatedInternal);
     on<TaskErrorInternal>(_onTaskErrorInternal);
+    on<TaskFilterChanged>(_onTaskFilterChanged);
   }
 
   void _onTaskStarted(
@@ -54,7 +58,53 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
     TasksUpdatedInternal event,
     Emitter<TaskState> emit,
   ) {
-    emit(TaskLoaded(tasks: event.tasks));
+    _latestAllTasks = event.tasks;
+    final filtered = _filterTasks(
+      _latestAllTasks,
+      _currentStatusFilter,
+      _currentPriorityFilter,
+    );
+    emit(TaskLoaded(
+      tasks: filtered,
+      allTasks: _latestAllTasks,
+      statusFilter: _currentStatusFilter,
+      priorityFilter: _currentPriorityFilter,
+    ));
+  }
+
+  void _onTaskFilterChanged(
+    TaskFilterChanged event,
+    Emitter<TaskState> emit,
+  ) {
+    _currentStatusFilter = event.statusFilter;
+    _currentPriorityFilter = event.priorityFilter;
+    final filtered = _filterTasks(
+      _latestAllTasks,
+      _currentStatusFilter,
+      _currentPriorityFilter,
+    );
+    emit(TaskLoaded(
+      tasks: filtered,
+      allTasks: _latestAllTasks,
+      statusFilter: _currentStatusFilter,
+      priorityFilter: _currentPriorityFilter,
+    ));
+  }
+
+  List<TaskEntity> _filterTasks(
+    List<TaskEntity> tasks,
+    TaskStatus? statusFilter,
+    TaskPriority? priorityFilter,
+  ) {
+    return tasks.where((task) {
+      if (statusFilter != null && task.status != statusFilter) {
+        return false;
+      }
+      if (priorityFilter != null && task.priority != priorityFilter) {
+        return false;
+      }
+      return true;
+    }).toList();
   }
 
   void _onTaskErrorInternal(
