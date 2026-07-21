@@ -1,10 +1,13 @@
 import 'package:equatable/equatable.dart';
 
-abstract class Failure extends Equatable {
+abstract class Failure extends Equatable implements Exception {
   const Failure({this.message, this.cause});
 
   final String? message;
   final Object? cause;
+
+  @override
+  String toString() => message ?? 'Something went wrong. Please try again.';
 
   @override
   List<Object?> get props => [message, cause];
