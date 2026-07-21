@@ -48,7 +48,13 @@ class _HomePageContent extends StatelessWidget {
     return BlocListener<AuthBloc, AuthState>(
       listener: (context, state) {
         if (state is AuthUnauthenticated) {
-          Navigator.of(context).pushReplacementNamed(AppRoutes.login);
+          AppSnackBar.showSuccess(context, 'Signed out successfully.');
+          Navigator.of(context).pushNamedAndRemoveUntil(
+            AppRoutes.login,
+            (route) => false,
+          );
+        } else if (state is AuthFailure) {
+          AppSnackBar.showError(context, state.message);
         }
       },
       child: Scaffold(

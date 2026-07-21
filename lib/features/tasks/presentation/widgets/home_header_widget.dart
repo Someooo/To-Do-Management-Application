@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../authentication/presentation/bloc/auth_bloc.dart';
 import '../../../authentication/presentation/bloc/auth_event.dart';
 import '../../../authentication/presentation/bloc/auth_state.dart';
+import '../../../authentication/presentation/widgets/logout_confirmation_dialog.dart';
 
 class HomeHeaderWidget extends StatelessWidget {
   final int taskCount;
@@ -108,8 +109,14 @@ class HomeHeaderWidget extends StatelessWidget {
                       borderRadius: BorderRadius.circular(12),
                     ),
                   ),
-                  onPressed: () {
-                    context.read<AuthBloc>().add(const AuthLogoutRequested());
+                  onPressed: () async {
+                    final confirmed =
+                        await LogoutConfirmationDialog.show(context);
+                    if (confirmed == true && context.mounted) {
+                      context
+                          .read<AuthBloc>()
+                          .add(const AuthLogoutRequested());
+                    }
                   },
                 ),
               ],
