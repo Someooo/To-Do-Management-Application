@@ -38,6 +38,7 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
     on<TaskSearchChanged>(_onTaskSearchChanged);
     on<TaskRefreshed>(_onTaskRefreshed);
     on<TaskSortOptionChanged>(_onTaskSortOptionChanged);
+    on<TaskFiltersCleared>(_onTaskFiltersCleared);
   }
 
   Future<void> _onTaskRefreshed(
@@ -149,6 +150,33 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
       _currentSearchQuery,
       _currentSortOption,
     );
+    emit(TaskLoaded(
+      tasks: filtered,
+      allTasks: _latestAllTasks,
+      statusFilter: _currentStatusFilter,
+      priorityFilter: _currentPriorityFilter,
+      searchQuery: _currentSearchQuery,
+      sortOption: _currentSortOption,
+    ));
+  }
+
+  void _onTaskFiltersCleared(
+    TaskFiltersCleared event,
+    Emitter<TaskState> emit,
+  ) {
+    _currentStatusFilter = null;
+    _currentPriorityFilter = null;
+    _currentSearchQuery = '';
+    _currentSortOption = TaskSortOption.none;
+
+    final filtered = _filterTasks(
+      _latestAllTasks,
+      _currentStatusFilter,
+      _currentPriorityFilter,
+      _currentSearchQuery,
+      _currentSortOption,
+    );
+
     emit(TaskLoaded(
       tasks: filtered,
       allTasks: _latestAllTasks,

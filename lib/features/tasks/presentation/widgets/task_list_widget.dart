@@ -18,7 +18,7 @@ class TaskListWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListView.builder(
       physics: const AlwaysScrollableScrollPhysics(),
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      padding: const EdgeInsets.fromLTRB(16, 12, 16, 80),
       itemCount: tasks.length,
       itemBuilder: (context, index) {
         final task = tasks[index];

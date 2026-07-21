@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:my_template/core/utils/debouncer.dart';
 
 class TaskSearchWidget extends StatefulWidget {
+  final String initialQuery;
   final ValueChanged<String> onChanged;
 
   const TaskSearchWidget({
     super.key,
+    this.initialQuery = '',
     required this.onChanged,
   });
 
@@ -20,7 +22,15 @@ class _TaskSearchWidgetState extends State<TaskSearchWidget> {
   @override
   void initState() {
     super.initState();
-    _controller = TextEditingController();
+    _controller = TextEditingController(text: widget.initialQuery);
+  }
+
+  @override
+  void didUpdateWidget(covariant TaskSearchWidget oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.initialQuery.isEmpty && _controller.text.isNotEmpty) {
+      _controller.text = '';
+    }
   }
 
   @override

@@ -85,11 +85,18 @@ class _HomePageContent extends StatelessWidget {
                   const SizedBox(height: 16),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 20),
-                    child: TaskSearchWidget(
-                      onChanged: (newQuery) {
-                        context
-                            .read<TaskBloc>()
-                            .add(TaskSearchChanged(newQuery));
+                    child: BlocBuilder<TaskBloc, TaskState>(
+                      builder: (context, state) {
+                        final query =
+                            state is TaskLoaded ? state.searchQuery : '';
+                        return TaskSearchWidget(
+                          initialQuery: query,
+                          onChanged: (newQuery) {
+                            context
+                                .read<TaskBloc>()
+                                .add(TaskSearchChanged(newQuery));
+                          },
+                        );
                       },
                     ),
                   ),
@@ -134,8 +141,9 @@ class _HomePageContent extends StatelessWidget {
                         final sortOption =
                             state is TaskLoaded ? state.sortOption : TaskSortOption.none;
                         return Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
+                            _buildClearFiltersButton(context, state),
                             TaskSortWidget(
                               selectedSortOption: sortOption,
                               onSortOptionChanged: (newOption) {
@@ -233,6 +241,41 @@ class _HomePageContent extends StatelessWidget {
           ),
           child: const Icon(Icons.add_rounded, size: 28),
         ),
+      ),
+    );
+  }
+
+  Widget _buildClearFiltersButton(BuildContext context, TaskState state) {
+    if (state is! TaskLoaded) return const SizedBox.shrink();
+
+    final hasActiveFilter = state.statusFilter != null ||
+        state.priorityFilter != null ||
+        state.searchQuery.isNotEmpty ||
+        state.sortOption != TaskSortOption.none;
+
+    if (!hasActiveFilter) return const SizedBox.shrink();
+
+    return TextButton.icon(
+      onPressed: () {
+        context.read<TaskBloc>().add(const TaskFiltersCleared());
+      },
+      icon: const Icon(
+        Icons.restart_alt_rounded,
+        size: 18,
+        color: Color(0xFFEF4444),
+      ),
+      label: const Text(
+        'Clear Filters',
+        style: TextStyle(
+          fontSize: 13,
+          color: Color(0xFFEF4444),
+          fontWeight: FontWeight.w600,
+        ),
+      ),
+      style: TextButton.styleFrom(
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+        minimumSize: Size.zero,
+        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
       ),
     );
   }

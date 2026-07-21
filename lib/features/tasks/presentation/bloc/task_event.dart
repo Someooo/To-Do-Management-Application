@@ -96,4 +96,8 @@ class TaskSortOptionChanged extends TaskEvent {
   List<Object?> get props => [sortOption];
 }
 
+class TaskFiltersCleared extends TaskEvent {
+  const TaskFiltersCleared();
+}
+
 
