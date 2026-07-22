@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../domain/usecases/forgot_password_usecase.dart';
 import '../../domain/usecases/get_current_user_usecase.dart';
@@ -71,8 +72,11 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   ) async {
     try {
       await _logoutUseCase();
-    } catch (_) {}
-    emit(const AuthUnauthenticated());
+      emit(const AuthUnauthenticated());
+    } catch (e) {
+      debugPrint('Logout failed: $e');
+      emit(AuthFailure(message: e.toString()));
+    }
   }
 
   Future<void> _onForgotPasswordRequested(

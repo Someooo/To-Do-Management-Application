@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../domain/entities/task_entity.dart';
 import '../../domain/usecases/add_task_usecase.dart';
 import '../../domain/usecases/delete_task_usecase.dart';
+import '../../domain/usecases/filter_and_sort_tasks_usecase.dart';
 import '../../domain/usecases/get_tasks_usecase.dart';
 import '../../domain/usecases/update_task_usecase.dart';
 import 'task_event.dart';
@@ -13,6 +14,7 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
   final AddTaskUseCase addTaskUseCase;
   final UpdateTaskUseCase updateTaskUseCase;
   final DeleteTaskUseCase deleteTaskUseCase;
+  final FilterAndSortTasksUseCase filterAndSortTasksUseCase;
 
   StreamSubscription<List<TaskEntity>>? _tasksSubscription;
   List<TaskEntity> _latestAllTasks = [];
@@ -26,6 +28,7 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
     required this.addTaskUseCase,
     required this.updateTaskUseCase,
     required this.deleteTaskUseCase,
+    required this.filterAndSortTasksUseCase,
   }) : super(const TaskInitial()) {
     on<TaskStarted>(_onTaskStarted);
     on<TaskSubscriptionRequested>(_onTaskSubscriptionRequested);
@@ -81,21 +84,7 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
     Emitter<TaskState> emit,
   ) {
     _latestAllTasks = event.tasks;
-    final filtered = _filterTasks(
-      _latestAllTasks,
-      _currentStatusFilter,
-      _currentPriorityFilter,
-      _currentSearchQuery,
-      _currentSortOption,
-    );
-    emit(TaskLoaded(
-      tasks: filtered,
-      allTasks: _latestAllTasks,
-      statusFilter: _currentStatusFilter,
-      priorityFilter: _currentPriorityFilter,
-      searchQuery: _currentSearchQuery,
-      sortOption: _currentSortOption,
-    ));
+    _emitFilteredTasks(emit);
   }
 
   void _onTaskFilterChanged(
@@ -104,21 +93,7 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
   ) {
     _currentStatusFilter = event.statusFilter;
     _currentPriorityFilter = event.priorityFilter;
-    final filtered = _filterTasks(
-      _latestAllTasks,
-      _currentStatusFilter,
-      _currentPriorityFilter,
-      _currentSearchQuery,
-      _currentSortOption,
-    );
-    emit(TaskLoaded(
-      tasks: filtered,
-      allTasks: _latestAllTasks,
-      statusFilter: _currentStatusFilter,
-      priorityFilter: _currentPriorityFilter,
-      searchQuery: _currentSearchQuery,
-      sortOption: _currentSortOption,
-    ));
+    _emitFilteredTasks(emit);
   }
 
   void _onTaskSearchChanged(
@@ -126,21 +101,7 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
     Emitter<TaskState> emit,
   ) {
     _currentSearchQuery = event.searchQuery;
-    final filtered = _filterTasks(
-      _latestAllTasks,
-      _currentStatusFilter,
-      _currentPriorityFilter,
-      _currentSearchQuery,
-      _currentSortOption,
-    );
-    emit(TaskLoaded(
-      tasks: filtered,
-      allTasks: _latestAllTasks,
-      statusFilter: _currentStatusFilter,
-      priorityFilter: _currentPriorityFilter,
-      searchQuery: _currentSearchQuery,
-      sortOption: _currentSortOption,
-    ));
+    _emitFilteredTasks(emit);
   }
 
   void _onTaskSortOptionChanged(
@@ -148,21 +109,7 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
     Emitter<TaskState> emit,
   ) {
     _currentSortOption = event.sortOption;
-    final filtered = _filterTasks(
-      _latestAllTasks,
-      _currentStatusFilter,
-      _currentPriorityFilter,
-      _currentSearchQuery,
-      _currentSortOption,
-    );
-    emit(TaskLoaded(
-      tasks: filtered,
-      allTasks: _latestAllTasks,
-      statusFilter: _currentStatusFilter,
-      priorityFilter: _currentPriorityFilter,
-      searchQuery: _currentSearchQuery,
-      sortOption: _currentSortOption,
-    ));
+    _emitFilteredTasks(emit);
   }
 
   void _onTaskFiltersCleared(
@@ -174,14 +121,17 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
     _currentSearchQuery = '';
     _currentSortOption = TaskSortOption.none;
 
-    final filtered = _filterTasks(
-      _latestAllTasks,
-      _currentStatusFilter,
-      _currentPriorityFilter,
-      _currentSearchQuery,
-      _currentSortOption,
-    );
+    _emitFilteredTasks(emit);
+  }
 
+  void _emitFilteredTasks(Emitter<TaskState> emit) {
+    final filtered = filterAndSortTasksUseCase(
+      tasks: _latestAllTasks,
+      statusFilter: _currentStatusFilter,
+      priorityFilter: _currentPriorityFilter,
+      searchQuery: _currentSearchQuery,
+      sortOption: _currentSortOption,
+    );
     emit(TaskLoaded(
       tasks: filtered,
       allTasks: _latestAllTasks,
@@ -190,53 +140,6 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
       searchQuery: _currentSearchQuery,
       sortOption: _currentSortOption,
     ));
-  }
-
-  List<TaskEntity> _filterTasks(
-    List<TaskEntity> tasks,
-    TaskStatus? statusFilter,
-    TaskPriority? priorityFilter,
-    String searchQuery,
-    TaskSortOption sortOption,
-  ) {
-    final query = searchQuery.trim().toLowerCase();
-
-    final filtered = tasks.where((task) {
-      if (statusFilter != null && task.status != statusFilter) {
-        return false;
-      }
-      if (priorityFilter != null && task.priority != priorityFilter) {
-        return false;
-      }
-      if (query.isNotEmpty) {
-        final matchesTitle = task.title.toLowerCase().contains(query);
-        if (!matchesTitle) return false;
-      }
-      return true;
-    }).toList();
-
-    switch (sortOption) {
-      case TaskSortOption.none:
-        break;
-      case TaskSortOption.dueDate:
-        filtered.sort((a, b) {
-          if (a.dueDate == null && b.dueDate == null) return 0;
-          if (a.dueDate == null) return 1;
-          if (b.dueDate == null) return -1;
-          return a.dueDate!.compareTo(b.dueDate!);
-        });
-        break;
-      case TaskSortOption.createdAt:
-        filtered.sort((a, b) {
-          if (a.createdAt == null && b.createdAt == null) return 0;
-          if (a.createdAt == null) return 1;
-          if (b.createdAt == null) return -1;
-          return b.createdAt!.compareTo(a.createdAt!);
-        });
-        break;
-    }
-
-    return filtered;
   }
 
   void _onTaskErrorInternal(

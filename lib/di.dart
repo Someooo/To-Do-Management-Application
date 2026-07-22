@@ -17,6 +17,7 @@ import 'package:my_template/features/tasks/data/repositories/task_repository_imp
 import 'package:my_template/features/tasks/domain/repositories/task_repository.dart';
 import 'package:my_template/features/tasks/domain/usecases/add_task_usecase.dart';
 import 'package:my_template/features/tasks/domain/usecases/delete_task_usecase.dart';
+import 'package:my_template/features/tasks/domain/usecases/filter_and_sort_tasks_usecase.dart';
 import 'package:my_template/features/tasks/domain/usecases/get_tasks_usecase.dart';
 import 'package:my_template/features/tasks/domain/usecases/update_task_usecase.dart';
 import 'package:my_template/features/tasks/presentation/bloc/task_bloc.dart';
@@ -67,12 +68,14 @@ Future<void> configureDependencies() async {
   getIt.registerLazySingleton(() => AddTaskUseCase(repository: getIt()));
   getIt.registerLazySingleton(() => UpdateTaskUseCase(repository: getIt()));
   getIt.registerLazySingleton(() => DeleteTaskUseCase(repository: getIt()));
+  getIt.registerLazySingleton(() => FilterAndSortTasksUseCase());
 
   getIt.registerFactory(() => TaskBloc(
         getTasksUseCase: getIt(),
         addTaskUseCase: getIt(),
         updateTaskUseCase: getIt(),
         deleteTaskUseCase: getIt(),
+        filterAndSortTasksUseCase: getIt(),
       ));
 
   getIt.registerLazySingleton(() => ThemeBloc(storageService: getIt()));
