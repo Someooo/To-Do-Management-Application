@@ -1,7 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get_it/get_it.dart';
-import 'package:my_template/core/services/api_service.dart';
 import 'package:my_template/core/services/network_service.dart';
 import 'package:my_template/core/services/storage_service.dart';
 import 'package:my_template/features/authentication/data/datasources/auth_remote_data_source.dart';
@@ -27,7 +26,7 @@ final getIt = GetIt.instance;
 
 Future<void> configureDependencies() async {
   // Core Services
-  getIt.registerLazySingleton<ApiService>(() => ApiService());
+
   
   final storageService = StorageService();
   await storageService.init();
@@ -76,5 +75,5 @@ Future<void> configureDependencies() async {
         deleteTaskUseCase: getIt(),
       ));
 
-  getIt.registerFactory(() => ThemeBloc(storageService: getIt()));
+  getIt.registerLazySingleton(() => ThemeBloc(storageService: getIt()));
 }

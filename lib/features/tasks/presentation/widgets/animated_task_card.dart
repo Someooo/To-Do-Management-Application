@@ -6,12 +6,10 @@ class AnimatedTaskCard extends StatelessWidget {
   final Widget child;
   final int index;
 
-  const AnimatedTaskCard({Key? key, required this.child, required this.index}) : super(key: key);
+  const AnimatedTaskCard({super.key, required this.child, required this.index});
 
   @override
   Widget build(BuildContext context) {
-    // Stagger each item slightly using the index.
-    final startDelay = Duration(milliseconds: 50 * index);
     return TweenAnimationBuilder<double>(
       tween: Tween(begin: 0.0, end: 1.0),
       duration: const Duration(milliseconds: 300),

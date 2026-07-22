@@ -7,7 +7,7 @@ import 'package:flutter/scheduler.dart';
 class AnimatedAvatar extends StatefulWidget {
   final String initials;
 
-  const AnimatedAvatar({Key? key, required this.initials}) : super(key: key);
+  const AnimatedAvatar({super.key, required this.initials});
 
   @override
   State<AnimatedAvatar> createState() => _AnimatedAvatarState();

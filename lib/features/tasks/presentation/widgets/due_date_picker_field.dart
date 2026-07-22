@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
-class DueDatePickerField extends StatelessWidget {
+class DueDatePickerField extends StatefulWidget {
   final DateTime? selectedDate;
   final ValueChanged<DateTime> onDateSelected;
 
@@ -11,12 +11,45 @@ class DueDatePickerField extends StatelessWidget {
     required this.onDateSelected,
   });
 
+  @override
+  State<DueDatePickerField> createState() => _DueDatePickerFieldState();
+}
+
+class _DueDatePickerFieldState extends State<DueDatePickerField> {
+  late final TextEditingController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = TextEditingController(
+      text: widget.selectedDate != null
+          ? DateFormat('MMM dd, yyyy').format(widget.selectedDate!)
+          : '',
+    );
+  }
+
+  @override
+  void didUpdateWidget(covariant DueDatePickerField oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.selectedDate != oldWidget.selectedDate) {
+      _controller.text = widget.selectedDate != null
+          ? DateFormat('MMM dd, yyyy').format(widget.selectedDate!)
+          : '';
+    }
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
   Future<void> _pickDate(BuildContext context) async {
     final now = DateTime.now();
     final today = DateTime(now.year, now.month, now.day);
-    final initial = (selectedDate == null || selectedDate!.isBefore(today))
+    final initial = (widget.selectedDate == null || widget.selectedDate!.isBefore(today))
         ? today
-        : selectedDate!;
+        : widget.selectedDate!;
 
     final picked = await showDatePicker(
       context: context,
@@ -38,7 +71,7 @@ class DueDatePickerField extends StatelessWidget {
     );
 
     if (picked != null) {
-      onDateSelected(picked);
+      widget.onDateSelected(picked);
     }
   }
 
@@ -48,12 +81,6 @@ class DueDatePickerField extends StatelessWidget {
     final labelColor = isDark ? Colors.grey.shade400 : const Color(0xFF404752);
     final inputBgColor = isDark ? const Color(0xFF1F2937) : const Color(0xFFF3F3F7);
     final textColor = Theme.of(context).colorScheme.onSurface;
-
-    final controller = TextEditingController(
-      text: selectedDate != null
-          ? DateFormat('MMM dd, yyyy').format(selectedDate!)
-          : '',
-    );
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -71,19 +98,19 @@ class DueDatePickerField extends StatelessWidget {
           ),
         ),
         TextFormField(
-          controller: controller,
+          controller: _controller,
           readOnly: true,
           onTap: () => _pickDate(context),
           validator: (value) {
-            if (selectedDate == null || (value == null || value.isEmpty)) {
+            if (widget.selectedDate == null || (value == null || value.isEmpty)) {
               return 'Please select a due date';
             }
             final now = DateTime.now();
             final today = DateTime(now.year, now.month, now.day);
             final compareDate = DateTime(
-              selectedDate!.year,
-              selectedDate!.month,
-              selectedDate!.day,
+              widget.selectedDate!.year,
+              widget.selectedDate!.month,
+              widget.selectedDate!.day,
             );
             if (compareDate.isBefore(today)) {
               return 'Due date cannot be in the past.';
