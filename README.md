@@ -206,15 +206,17 @@ flutter run
 
 ## 📱 Screenshots
 
-*(Placeholders for future implementation - Add images to `assets/screenshots/`)*
-
-| Splash & Welcome | Authentication | Home (Light) |
+| Splash | Authentication | Home (Light) |
 |:---:|:---:|:---:|
-| <img src="https://via.placeholder.com/250x500.png?text=Splash+Screen" width="250"> | <img src="https://via.placeholder.com/250x500.png?text=Login" width="250"> | <img src="https://via.placeholder.com/250x500.png?text=Home+Screen" width="250"> |
+| <img src="assets/images/splash.jpeg" width="250"> | <img src="assets/images/loginScreen.jpeg" width="250"> | <img src="assets/images/homeLightMode.jpeg" width="250"> |
 
-| Home (Dark Theme) | Filtering & Sorting | Create/Edit Task |
+| Home (Dark Theme) | Filtering & Sorting | Add Task |
 |:---:|:---:|:---:|
-| <img src="https://via.placeholder.com/250x500.png?text=Dark+Theme" width="250"> | <img src="https://via.placeholder.com/250x500.png?text=Filters" width="250"> | <img src="https://via.placeholder.com/250x500.png?text=Add+Task" width="250"> |
+| <img src="assets/images/homeDarkMode.jpeg" width="250"> | <img src="assets/images/sotrBy.jpeg" width="250"> | <img src="assets/images/ScreenAddTAsk.jpeg" width="250"> |
+
+| Edit Task | | |
+|:---:|:---:|:---:|
+| <img src="assets/images/EditTaskScreen.jpeg" width="250"> | | |
 
 ---
 
